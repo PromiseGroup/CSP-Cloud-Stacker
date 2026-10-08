@@ -94,6 +94,20 @@ const toWorld = (blk, i) => ({
 
 The base block (On-Premise) is `{ x0: 0, w: 170, y0: 0, h: 50, label: 'On-prem' }`, drawn with `{ kind: 'base' }`.
 
+### Labels on narrow blocks
+
+Blocks shrink as the player misses, so `drawBlock` fits every label to its face (`fitLabel()` in `stack-renderer.js`). Don't draw labels any other way. In order:
+
+1. Blocks under 96 world units wide drop their LED dots to free room.
+2. Full name at 8px.
+3. Tighter letter-spacing.
+4. Smaller type, down to 6px.
+5. Short code: `block.short` if set, otherwise the `SHORT_LABELS` map, e.g. SHAREPOINT → SPO.
+6. Truncate with "…".
+7. Hide the label.
+
+The text is also clipped to the face as a safety net. To add services, add their short codes to `SHORT_LABELS`.
+
 ## Frame draw order (Screen B canvas)
 
 ```

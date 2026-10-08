@@ -94,6 +94,60 @@
     };
   }
 
+  // ── Label fitting ────────────────────────────────────────────────────────────
+  // Blocks shrink as the player misses, so labels must fit the face they sit on.
+  // Ladder: full size → tighter tracking → smaller type (min 6px) → short code →
+  // truncate with "…" → hide. Measured in world units (the label's own space).
+  const LABEL_FIT = {
+    inset: 9,          // gap from the block's left end
+    ledZone: 24,       // room the two LEDs take at the right end
+    endPad: 5,         // breathing room before the end / LEDs
+    ledMinWidth: 96,   // blocks narrower than this drop their LEDs to free space
+    size: 8, minSize: 6,
+    spacing: 1.12, tightSpacing: 0.4,
+    minChars: 3,       // below this many visible characters, hide the label
+  };
+
+  // Rack-style short codes, used when the full name can't fit even at minimum size.
+  // Add or edit entries to match your service list. Keys are upper-case full names.
+  const SHORT_LABELS = {
+    'SHAREPOINT': 'SPO', 'DEFENDER': 'DEF', 'SENTINEL': 'SNTL', 'AZURE SQL': 'SQL',
+    'AZURE AI': 'AI', 'COPILOT': 'CPLT', 'PURVIEW': 'PRVW', 'STORAGE': 'STOR',
+    'COMPUTE': 'CMPT', 'INTUNE': 'INTN', 'FABRIC': 'FBRC', 'ENTRA': 'ENTRA', 'TEAMS': 'TEAMS',
+    'ON-PREM': 'ON-PREM',
+  };
+
+  /** Returns { text, size, spacing } that fits the block's label face, or null to hide it. */
+  function fitLabel(ctx, b, showLeds, weight) {
+    const L = LABEL_FIT;
+    const avail = b.w - L.inset - L.endPad - (showLeds ? L.ledZone : 0);
+    if (avail <= 0) return null;
+    const full = b.label.toUpperCase();
+    const measure = (text, size, spacing) => {
+      ctx.font = `${weight} ${size}px ${MONO}`;
+      if ('letterSpacing' in ctx) ctx.letterSpacing = `${spacing}px`;
+      // measureText includes letterSpacing in Chromium/Firefox; add it manually where it doesn't.
+      const w = ctx.measureText(text).width;
+      return 'letterSpacing' in ctx ? w : w + spacing * text.length;
+    };
+    const tryText = (text) => {
+      if (measure(text, L.size, L.spacing) <= avail) return { text, size: L.size, spacing: L.spacing };
+      const tight = measure(text, L.size, L.tightSpacing);
+      if (tight <= avail) return { text, size: L.size, spacing: L.tightSpacing };
+      const size = Math.floor(L.size * (avail / tight) * 10) / 10;
+      if (size >= L.minSize) return { text, size, spacing: L.tightSpacing };
+      return null;
+    };
+    const fitted = tryText(full) || (b.short && tryText(b.short.toUpperCase())) || (SHORT_LABELS[full] && tryText(SHORT_LABELS[full]));
+    if (fitted) return fitted;
+    // Last resort: truncate at minimum size.
+    for (let n = full.length - 1; n >= L.minChars; n--) {
+      const text = full.slice(0, n) + '…';
+      if (measure(text, L.minSize, L.tightSpacing) <= avail) return { text, size: L.minSize, spacing: L.tightSpacing };
+    }
+    return null;
+  }
+
   function faces(v, b) {
     const d = b.d ?? GEOM.depth;
     const x0 = b.x0, x1 = b.x0 + b.w, y0 = b.y0, yt = b.y0 + b.h;
@@ -267,22 +321,31 @@
       ctx.restore();
     }
 
-    // Label, printed on the long (left) face, skewed into isometric.
+    // LEDs only on blocks wide enough to spare the room; narrower blocks give it to the label.
+    const showLeds = kind !== 'shard' && b.w >= LABEL_FIT.ledMinWidth;
+
+    // Label, printed on the long (left) face, skewed into isometric, fitted to the face.
     if (b.label && kind !== 'shard') {
-      const la = v.p(b.x0 + 9, d, b.y0 + b.h / 2 - 3.2);
-      ctx.save();
-      ctx.translate(la[0], la[1]);
-      ctx.transform(COS * k, SIN * k, 0, k, 0, 0);
-      ctx.font = `${flash > 0.5 ? 600 : 500} 8px ${MONO}`;
-      if ('letterSpacing' in ctx) ctx.letterSpacing = '1.12px';
-      ctx.fillStyle = flash > 0.5 ? '#0A2A55' : kind === 'base' ? pal.label : 'rgba(240,248,255,0.9)';
-      ctx.globalAlpha = baseAlpha;
-      ctx.fillText(b.label.toUpperCase(), 0, 0);
-      ctx.restore();
+      const weight = flash > 0.5 ? 600 : 500;
+      const fit = fitLabel(ctx, b, showLeds, weight);
+      if (fit) {
+        const la = v.p(b.x0 + LABEL_FIT.inset, d, b.y0 + b.h / 2 - fit.size * 0.4);
+        ctx.save();
+        poly(ctx, f.left);   // safety net: never paint outside the face
+        ctx.clip();
+        ctx.translate(la[0], la[1]);
+        ctx.transform(COS * k, SIN * k, 0, k, 0, 0);
+        ctx.font = `${weight} ${fit.size}px ${MONO}`;
+        if ('letterSpacing' in ctx) ctx.letterSpacing = `${fit.spacing}px`;
+        ctx.fillStyle = flash > 0.5 ? '#0A2A55' : kind === 'base' ? pal.label : 'rgba(240,248,255,0.9)';
+        ctx.globalAlpha = baseAlpha;
+        ctx.fillText(fit.text, 0, 0);
+        ctx.restore();
+      }
     }
 
     // Status LEDs near the right end of the label face.
-    if (kind !== 'shard' && b.w > 44) {
+    if (showLeds) {
       const mid = b.y0 + b.h / 2;
       const d1 = v.p(b.x0 + b.w - 11, d, mid);
       const d2 = v.p(b.x0 + b.w - 18, d, mid);
@@ -602,7 +665,7 @@
   }
 
   global.StackRenderer = {
-    COLORS, GEOM, MONO, DISPLAY,
+    COLORS, GEOM, MONO, DISPLAY, LABEL_FIT, SHORT_LABELS, fitLabel,
     scaleFor, makeView, centredOriginX, tint,
     drawBlock, drawDropGuide, drawTrail,
     drawPerfectRings, drawCutLine, drawShard, shakeOffset, drawPopup,
