@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#002353" />
+  <meta name="theme-color" content="#02060F" />
   <title>Cloud Stacker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ["Manrope", "system-ui", "sans-serif"],
-            mono: ["IBM Plex Mono", "ui-monospace", "monospace"],
+            sans: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+            mono: ["Martian Mono", "ui-monospace", "monospace"],
           },
           colors: {
             main: "#002353",
@@ -35,9 +35,9 @@
       height: 100%;
       margin: 0;
       overflow: hidden;
-      background: #000814;
-      color: #e8f0ff;
-      font-family: Manrope, system-ui, sans-serif;
+      background: #02060F;
+      color: #F4F8FF;
+      font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
       touch-action: none;
       overscroll-behavior: none;
       user-select: none;
@@ -55,84 +55,162 @@
 
     .is-hidden { display: none !important; }
 
-    .font-mono, #score, #final-score, #initials {
-      font-family: "IBM Plex Mono", ui-monospace, monospace;
-    }
-
-    #initials {
-      letter-spacing: 0.42em;
-      text-indent: 0.42em;
-    }
-
-    #overlay-end, #overlay-end input, #overlay-end button, #d365-form-wrapper, #d365-form-wrapper * {
+    #overlay-end, #overlay-end input, #overlay-end button, #panel-lead, #d365-form-wrapper, #d365-form-wrapper * {
       touch-action: auto;
       user-select: text;
       -webkit-user-select: text;
     }
 
-    .breathe { animation: breathe 2.4s ease-in-out infinite; }
+    #panel-lead { -webkit-overflow-scrolling: touch; }
 
-    @keyframes breathe {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.62; }
+    .cs-pulse { animation: cs-pulse 1.8s ease-out infinite; }
+    @keyframes cs-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(0,120,212,.6), 0 12px 32px rgba(0,112,201,.45); }
+      100% { box-shadow: 0 0 0 18px rgba(0,120,212,0), 0 12px 32px rgba(0,112,201,.45); }
     }
 
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: none; }
+    #d365-form-wrapper label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #C9D7EC;
     }
-
-    #overlay-end:not(.is-hidden) .end-card { animation: rise 480ms ease; }
+    #d365-form-wrapper input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+    #d365-form-wrapper select,
+    #d365-form-wrapper textarea {
+      width: 100%;
+      height: 46px;
+      box-sizing: border-box;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid #22406E;
+      background: #081733;
+      color: #F4F8FF;
+      font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+      font-size: 15px;
+    }
+    #d365-form-wrapper textarea { height: auto; min-height: 46px; padding: 12px 14px; }
+    #d365-form-wrapper input::placeholder,
+    #d365-form-wrapper textarea::placeholder { color: #5F7598; }
+    #d365-form-wrapper input:focus,
+    #d365-form-wrapper select:focus,
+    #d365-form-wrapper textarea:focus {
+      outline: none;
+      border-color: #3AA0FF;
+      box-shadow: 0 0 0 4px rgba(0,120,212,.28);
+      background: #0A1D42;
+    }
+    #d365-form-wrapper button,
+    #d365-form-wrapper input[type="submit"] {
+      height: 54px;
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      background: #0070C9;
+      color: #fff;
+      font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      font-stretch: 115%;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 30px rgba(0,112,201,.35);
+      cursor: pointer;
+    }
+    #d365-form-wrapper button:hover,
+    #d365-form-wrapper input[type="submit"]:hover { background: #0A7BDA; }
 
     @media (prefers-reduced-motion: reduce) {
-      .breathe, #overlay-end:not(.is-hidden) .end-card { animation: none; }
+      .cs-pulse { animation: none; }
     }
   </style>
 </head>
 <body>
   <canvas id="game" aria-label="Cloud Stacker playfield"></canvas>
 
-  <div id="hud" class="is-hidden pointer-events-none absolute inset-0 z-20">
-    <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#000814]/80 to-transparent"></div>
-    <div class="absolute text-right" style="right: max(1.5rem, env(safe-area-inset-right)); top: max(1.25rem, env(safe-area-inset-top));">
-      <div class="text-[10px] font-semibold uppercase tracking-[0.46em] text-white/50">Score</div>
-      <div id="score" class="mt-1 text-4xl font-medium leading-none tracking-tight text-[#e8f0ff]">0</div>
+  <div class="fixed z-50 top-[26px] left-[22px] flex items-center gap-2.5 pointer-events-none">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L20 7.5 L11 12 L2 7.5 Z" fill="#5BE3FF"/><path d="M2 11 L11 15.5 L20 11" stroke="#2E9BFF" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M2 14.5 L11 19 L20 14.5" stroke="#1C5FB8" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg>
+    <span class="font-['Martian_Mono'] text-[11px] font-semibold tracking-[.24em] text-[#DCE8FA]">CLOUD STACKER</span>
+  </div>
+
+  <div id="hud" class="is-hidden pointer-events-none">
+    <div class="fixed top-5 right-[22px] flex flex-col items-end gap-1 font-['Martian_Mono']">
+      <span class="text-[10px] font-medium tracking-[.32em] text-[#7F93B5]">SCORE</span>
+      <span id="score" class="text-[40px] md:text-[64px] font-semibold [font-stretch:87.5%] leading-none tracking-[-0.02em] tabular-nums text-[#F4F8FF]">0</span>
+    </div>
+    <div id="drop-hint" class="fixed inset-x-0 bottom-[34px] flex items-center justify-center gap-3 font-['Martian_Mono']">
+      <span class="relative w-[22px] h-[22px]"><span class="absolute inset-0 rounded-full border-[1.5px] border-[#5BE3FF] animate-ping"></span><span class="absolute left-[7px] top-[7px] w-2 h-2 rounded-full bg-[#5BE3FF]"></span></span>
+      <span class="text-[10px] font-medium tracking-[.28em] text-[#A9BDDB]">TAP ANYWHERE TO DROP</span>
     </div>
   </div>
 
-  <div id="overlay-start" class="absolute inset-0 z-30 flex items-center justify-center px-6">
-    <div class="w-full max-w-md rounded-3xl border border-white/10 bg-[#002353]/78 px-8 py-10 shadow-[0_40px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl">
-      <p class="text-[11px] font-semibold uppercase tracking-[0.48em] text-[#f5db2c]">Cloud Stacker</p>
-      <div class="mt-4 h-px w-14 bg-[#f5db2c]"></div>
-      <h1 class="mt-5 text-[clamp(2.5rem,7vh,4.4rem)] font-semibold leading-[0.96] tracking-[-0.035em] text-white">Build Your Cloud Stack</h1>
-      <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/65">Drop each rack on the one below. A true landing is worth more than a trimmed one.</p>
-      <button id="btn-start" type="button" class="breathe mt-8 w-full rounded-xl bg-[#2c71f5] px-6 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]">Tap to Start</button>
-    </div>
-  </div>
-
-  <div id="overlay-end" class="is-hidden absolute inset-0 z-40">
-    <div class="absolute inset-0 bg-[#002353]/75 backdrop-blur-md"></div>
-    <div class="relative flex h-full items-start justify-center px-6 pt-[9vh]">
-      <div class="end-card w-full max-w-md rounded-3xl border border-white/10 bg-[#002353]/82 px-8 py-9 shadow-[0_40px_120px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.48em] text-[#f5db2c]">Cloud Stacker</p>
-        <h2 class="mt-4 text-[clamp(2.2rem,5vh,3.4rem)] font-semibold leading-none tracking-[-0.03em] text-white">Stack Crashed!</h2>
-        <p class="mt-4 font-mono text-lg text-white/80">Final Score: <span id="final-score">0</span></p>
-
-        <div id="panel-initials">
-          <label for="initials" class="mt-8 block text-[10px] font-semibold uppercase tracking-[0.36em] text-white/50">Arcade Initials</label>
-          <input id="initials" maxlength="3" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="AAA" aria-label="Arcade Initials" class="mt-3 w-full rounded-xl border border-white/15 bg-[#000814]/70 px-4 py-4 text-center font-mono text-3xl uppercase text-white outline-none placeholder:text-white/25 focus:border-[#2c71f5]" />
-          <button id="btn-save" type="button" class="mt-6 w-full rounded-xl bg-[#2c71f5] px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]">Save Score</button>
-        </div>
-
-        <div id="panel-lead" class="is-hidden">
-          <div id="d365-form-wrapper" class="mt-8 rounded-xl border border-dashed border-white/20 bg-black/25 px-5 py-10 text-center text-sm tracking-wide text-white/60">CRM Form Goes Here</div>
-        </div>
+  <section id="overlay-start" class="fixed inset-0 z-30 flex flex-col justify-end min-[900px]:justify-center pointer-events-none">
+    <div class="absolute inset-x-0 bottom-0 h-[52%] bg-[linear-gradient(to_bottom,rgba(2,6,15,0)_0%,rgba(2,6,15,.82)_38%,#02060F_70%)] min-[900px]:inset-y-0 min-[900px]:h-auto min-[900px]:w-[60%] min-[900px]:bg-[linear-gradient(to_right,#02060F_0%,rgba(2,6,15,.85)_45%,rgba(2,6,15,0)_100%)]"></div>
+    <div class="relative w-full max-w-[420px] mx-auto px-6 pb-8 flex flex-col gap-[26px] pointer-events-auto min-[900px]:mx-0 min-[900px]:ml-[8vw] min-[900px]:p-0 min-[900px]:max-w-[460px] min-[900px]:gap-8">
+      <div>
+        <h1 class="font-['Archivo'] text-[44px] min-[900px]:text-[68px] leading-[.95] font-extrabold [font-stretch:115%] tracking-[-0.025em] text-[#F4F8FF]">Build your<br>cloud <span class="text-[#5BE3FF]">stack.</span></h1>
+        <p class="mt-3.5 text-[15px] min-[900px]:text-[17px] leading-[1.45] text-[#A9BDDB] max-w-[310px] min-[900px]:max-w-[380px]">Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.</p>
       </div>
+      <button id="btn-start" type="button" class="cs-pulse h-[60px] w-full min-[900px]:max-w-[340px] rounded-[14px] bg-[#0070C9] hover:bg-[#0A7BDA] text-white font-['Archivo'] text-[15px] font-bold [font-stretch:115%] tracking-[.18em] uppercase flex items-center justify-center gap-3">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8.5" opacity=".5"/></svg>
+        Tap to start
+      </button>
     </div>
+  </section>
+
+  <div id="overlay-end" class="is-hidden">
+    <section id="panel-initials" class="fixed inset-0 z-40 flex items-center justify-center p-5 bg-[rgba(2,6,15,.6)] backdrop-blur-[7px] backdrop-saturate-[.8]">
+      <div class="w-full max-w-[380px] rounded-[22px] bg-[#061430] border border-[rgba(110,170,255,.22)] shadow-[0_30px_80px_rgba(0,0,0,.6)] px-6 pt-7 pb-6 flex flex-col gap-[22px]">
+        <div>
+          <div class="flex items-center gap-2 font-['Martian_Mono'] text-[10px] font-semibold tracking-[.34em] text-[#FFB23F]">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFB23F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5h8"/><path d="M3 9.5h6"/><path d="M10.5 3.5l3.5 4.5-2.5 1.5"/></svg>
+            GAME OVER
+          </div>
+          <h2 class="mt-2.5 font-['Archivo'] text-[36px] leading-none font-extrabold [font-stretch:115%] tracking-[-0.02em] text-[#F4F8FF]">Stack crashed!</h2>
+        </div>
+        <div class="flex items-end justify-between gap-3 rounded-[14px] bg-[#0A1D42] px-[18px] pt-[18px] pb-4">
+          <div>
+            <div class="font-['Martian_Mono'] text-[10px] font-medium tracking-[.3em] text-[#8DA2C4]">FINAL SCORE</div>
+            <div id="final-score" class="mt-1.5 font-['Martian_Mono'] text-[54px] font-semibold [font-stretch:87.5%] leading-[.95] tracking-[-0.03em] tabular-nums text-white">0</div>
+          </div>
+          <div class="flex flex-col items-end gap-1 pb-1 text-[13px] text-[#A9BDDB]">
+            <span><b class="text-[#F4F8FF]" id="floors">0</b> floors</span>
+            <span><b class="text-[#5BE3FF]" id="perfects">0</b> perfect</span>
+          </div>
+        </div>
+        <div>
+          <label for="initials" class="block mb-3 text-[14px] font-semibold text-[#DCE8FA]">Your initials for the leaderboard</label>
+          <input id="initials" maxlength="3" inputmode="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Your initials for the leaderboard" class="w-full h-[76px] rounded-xl bg-[#0B2350] border-[1.5px] border-[#3AA0FF] shadow-[0_0_0_4px_rgba(0,120,212,.28)] text-white text-center uppercase font-['Martian_Mono'] text-[38px] font-semibold tracking-[.5em] pl-[.5em] outline-none">
+        </div>
+        <button id="btn-save" type="button" class="h-[58px] rounded-[14px] bg-[#0070C9] hover:bg-[#0A7BDA] text-white font-['Archivo'] text-[15px] font-bold [font-stretch:115%] tracking-[.18em] uppercase shadow-[0_12px_30px_rgba(0,112,201,.4)]">Save score</button>
+      </div>
+    </section>
+
+    <section id="panel-lead" class="is-hidden fixed inset-0 z-40 overflow-y-auto bg-[radial-gradient(120%_60%_at_50%_0%,#0B3470_0%,#071D45_34%,#040C22_66%,#02060F_100%)]">
+      <div class="max-w-[420px] mx-auto px-5 pt-[72px] pb-6 flex flex-col gap-[22px]">
+        <div class="self-start flex items-center gap-2.5 rounded-full bg-[#0A1D42] border border-[rgba(91,227,255,.25)] py-2 pl-2.5 pr-3.5">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="#5BE3FF" opacity=".16"/><path d="M5.2 9.3l2.4 2.3 5.2-5.2" stroke="#5BE3FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="chip-initials" class="font-['Martian_Mono'] text-xs font-semibold tracking-[.12em]">AAA</span>
+          <span class="w-px h-3.5 bg-[#2A4676]"></span>
+          <span id="chip-score" class="font-['Martian_Mono'] text-xs font-semibold tabular-nums">0</span>
+          <span class="text-xs text-[#A9BDDB]">saved</span>
+        </div>
+        <div>
+          <h1 class="font-['Archivo'] text-[36px] leading-[.98] font-extrabold [font-stretch:115%] tracking-[-0.025em] text-[#F4F8FF]">Enter the prize raffle!</h1>
+          <p class="mt-2.5 text-[15px] leading-[1.45] text-[#A9BDDB]">Leave your details for a chance to win <span class="text-[#F4F8FF] font-semibold">[PRIZE]</span>.</p>
+        </div>
+        <div id="d365-form-wrapper" class="rounded-[18px] border border-dashed border-[rgba(120,170,255,.38)] bg-[rgba(6,20,48,.55)] p-4 text-center text-sm text-[#7F93B5]">CRM Form Goes Here</div>
+        <p class="text-center text-xs text-[#7F93B5]">After you submit, the game resets for the next player.</p>
+      </div>
+    </section>
   </div>
 
+  <script src="stack-renderer.js"></script>
   <script>
     const LABELS = ["Compute", "Storage", "Copilot", "Defender", "Entra", "SharePoint"];
+    const ATTRACT_ROWS = [[0, 170], [0, 170], [6, 164], [6, 164], [10, 160], [10, 160], [10, 152], [14, 148]];
+    const ATTRACT_LABELS = ["Compute", "Storage", "Entra", "Defender", "SharePoint", "Copilot", "Intune", "Fabric", "Teams"];
     const GRAVITY = 2800;
     const MAX_SPEED = 420;
 
@@ -160,6 +238,7 @@
     let pixelRatio = 1;
     let mode = "start";
     let score = 0;
+    let perfects = 0;
     let scoreFlash = 0;
     let cameraY = 0;
     let hSpeed = 155;
@@ -173,38 +252,29 @@
     let floaters = [];
     let mover = null;
     let falling = null;
-    let noisePattern = null;
+    let sceneK = 1;
+    let backdrop = null;
+    let grain = null;
+    let floor = null;
+    let motes = null;
+    let view = null;
+    let clock = 0;
+    let fx = [];
+    let shards = [];
+    let shakeT0 = -1;
+    let spawnAt = -1;
+    let pendingWidth = 0;
+    let gameOverAt = -1;
+    let scoreCyanUntil = 0;
+    let attractStack = null;
+    let attractActive = null;
+    let attractDir = 1;
+
+    const R = StackRenderer;
+    const GEOM = R.GEOM;
 
     function randomLabel() {
       return LABELS[(Math.random() * LABELS.length) | 0];
-    }
-
-    function roundRect(x, y, w, h, r) {
-      const radius = Math.max(0, Math.min(r, w / 2, h / 2));
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.arcTo(x + w, y, x + w, y + h, radius);
-      ctx.arcTo(x + w, y + h, x, y + h, radius);
-      ctx.arcTo(x, y + h, x, y, radius);
-      ctx.arcTo(x, y, x + w, y, radius);
-      ctx.closePath();
-    }
-
-    function makeNoise() {
-      const tile = document.createElement("canvas");
-      tile.width = 128;
-      tile.height = 128;
-      const nctx = tile.getContext("2d");
-      const image = nctx.createImageData(128, 128);
-      for (let i = 0; i < image.data.length; i += 4) {
-        const shade = (Math.random() * 255) | 0;
-        image.data[i] = shade;
-        image.data[i + 1] = shade;
-        image.data[i + 2] = shade;
-        image.data[i + 3] = 255;
-      }
-      nctx.putImageData(image, 0, 0);
-      noisePattern = ctx.createPattern(tile, "repeat");
     }
 
     function resize() {
@@ -213,6 +283,132 @@
       pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.max(1, Math.round(viewW * pixelRatio));
       canvas.height = Math.max(1, Math.round(viewH * pixelRatio));
+      sceneK = R.scaleFor(viewW, viewH);
+      backdrop = R.buildBackdrop(viewW, viewH, sceneK, pixelRatio);
+      floor = R.buildFloor(sceneK, pixelRatio);
+      motes = R.makeMotes(viewW, viewH);
+      const ox = R.centredOriginX(viewW, sceneK);
+      if (!view) view = R.makeView(ox, viewH * 0.46, sceneK);
+      else view.k = sceneK;
+    }
+
+    function worldPerUnit() {
+      return GEOM.baseW / blocks[0].w;
+    }
+
+    function toWorld(blk, i) {
+      const scale = worldPerUnit();
+      return {
+        x0: (blk.x - blocks[0].x) * scale,
+        w: blk.w * scale,
+        y0: GEOM.baseH + i * GEOM.blockH,
+        h: GEOM.blockH,
+        label: blk.label,
+      };
+    }
+
+    function pieceWorld(piece, y0) {
+      const scale = worldPerUnit();
+      return {
+        x0: (piece.x - blocks[0].x) * scale,
+        w: piece.w * scale,
+        y0,
+        h: GEOM.blockH,
+        label: piece.label,
+      };
+    }
+
+    function spanWorld(x, w) {
+      const scale = worldPerUnit();
+      return {
+        x0: (x - blocks[0].x) * scale,
+        w: w * scale,
+      };
+    }
+
+    function flashAmount(block) {
+      if (block.flashT0 == null || block.flashT0 < 0) return 0;
+      const age = clock - block.flashT0;
+      if (age < 0.12) return 1;
+      return Math.max(0, 1 - (age - 0.12) / 0.25);
+    }
+
+    function cutAmount(block) {
+      if (block.cutT0 == null || block.cutT0 < 0) return 0;
+      return Math.max(0, 1 - (clock - block.cutT0) / 0.45) * 0.9;
+    }
+
+    function activeWorld(top) {
+      const hoverY = top.y0 + top.h + GEOM.hover;
+      if (falling) {
+        const lane = Math.max(104, viewH * 0.155);
+        const landScreen = (blocks[blocks.length - 1].y - cameraY) - falling.h;
+        const nowScreen = falling.y - cameraY;
+        const span = landScreen - lane || 1;
+        let progress = (nowScreen - lane) / span;
+        if (!falling.miss) progress = Math.max(0, Math.min(1, progress));
+        return pieceWorld(falling, hoverY + (top.y0 + top.h - hoverY) * progress);
+      }
+      if (mover) return pieceWorld(mover, hoverY);
+      return null;
+    }
+
+    function buildAttract() {
+      attractStack = ATTRACT_ROWS.map(([x0, w], i) => ({
+        x0,
+        w,
+        y0: GEOM.baseH + i * GEOM.blockH,
+        h: GEOM.blockH,
+        label: ATTRACT_LABELS[i],
+        flashT0: -1,
+        cutT0: -1,
+      }));
+      const top = attractStack[attractStack.length - 1];
+      const range = viewW < 600 ? 110 : 150;
+      attractDir = 1;
+      attractActive = {
+        x0: top.x0 - range,
+        w: top.w,
+        y0: top.y0 + top.h + GEOM.hover,
+        h: GEOM.blockH,
+        label: ATTRACT_LABELS[ATTRACT_LABELS.length - 1],
+      };
+    }
+
+    function updateAttract(dt) {
+      if (!attractStack) buildAttract();
+      const top = attractStack[attractStack.length - 1];
+      const range = viewW < 600 ? 110 : 150;
+      attractActive.w = top.w;
+      attractActive.y0 = top.y0 + top.h + GEOM.hover;
+      attractActive.x0 += attractDir * 90 * dt;
+      if (attractActive.x0 > top.x0 + range) {
+        attractActive.x0 = top.x0 + range;
+        attractDir = -1;
+      } else if (attractActive.x0 < top.x0 - range) {
+        attractActive.x0 = top.x0 - range;
+        attractDir = 1;
+      }
+    }
+
+    function viewTop() {
+      if (mode === "start" && attractStack && attractStack.length) {
+        return attractStack[attractStack.length - 1];
+      }
+      if (!blocks.length) return null;
+      return toWorld(blocks[blocks.length - 1], blocks.length - 1);
+    }
+
+    function easeView(dt) {
+      const top = viewTop();
+      if (!view || !top) return;
+      const anchor = mode === "start" ? (viewW >= 900 ? 0.30 : 0.24) : 0.46;
+      const targetOy = viewH * anchor + (top.y0 + top.h - top.x0 * 0.5) * sceneK;
+      const targetOx = R.centredOriginX(viewW, sceneK) + (mode === "start" && viewW >= 900 ? viewW * 0.16 : 0);
+      const ease = Math.min(1, dt * 5);
+      view.oy += (targetOy - view.oy) * ease;
+      view.ox += (targetOx - view.ox) * ease;
+      view.k = sceneK;
     }
 
     function resetWorld() {
@@ -227,6 +423,8 @@
         cutLeft: false,
         cutRight: false,
         glow: 0,
+        flashT0: -1,
+        cutT0: -1,
       }];
       cameraY = 0;
       debris = [];
@@ -234,11 +432,25 @@
       falling = null;
       shake = 0;
       score = 0;
+      perfects = 0;
       scoreFlash = 0;
+      fx = [];
+      shards = [];
+      shakeT0 = -1;
+      spawnAt = -1;
+      pendingWidth = 0;
+      gameOverAt = -1;
+      scoreCyanUntil = 0;
       hSpeed = 155;
       spawnSide = 1;
       spawnMover(width);
       paintScore();
+      syncHint();
+    }
+
+    function syncHint() {
+      const hint = document.getElementById("drop-hint");
+      if (hint) hint.classList.toggle("is-hidden", blocks.length > 4);
     }
 
     function spawnMover(width) {
@@ -262,10 +474,20 @@
       panelInitials.classList.toggle("is-hidden", next !== "gameover");
       panelLead.classList.toggle("is-hidden", next !== "lead");
       if (next === "gameover") {
-        finalScoreEl.textContent = String(score);
+        finalScoreEl.textContent = score.toLocaleString("en-US");
+        const floorsEl = document.getElementById("floors");
+        const perfectsEl = document.getElementById("perfects");
+        if (floorsEl) floorsEl.textContent = String(blocks.length);
+        if (perfectsEl) perfectsEl.textContent = String(perfects);
         initialsInput.value = "";
-        initialsInput.style.borderColor = "rgba(255,255,255,0.15)";
+        initialsInput.style.borderColor = "#3AA0FF";
         requestAnimationFrame(() => initialsInput.focus());
+      }
+      if (next === "lead") {
+        const chipInitials = document.getElementById("chip-initials");
+        const chipScore = document.getElementById("chip-score");
+        if (chipInitials) chipInitials.textContent = initialsInput.value || "AAA";
+        if (chipScore) chipScore.textContent = score.toLocaleString("en-US");
       }
     }
 
@@ -280,7 +502,7 @@
     }
 
     function dropBlock() {
-      if (mode !== "playing" || !mover || falling) return;
+      if (mode !== "playing" || !mover || falling || spawnAt >= 0 || gameOverAt >= 0) return;
       falling = {
         x: mover.x,
         y: mover.y,
@@ -293,33 +515,6 @@
         missDir: 1,
       };
       mover = null;
-    }
-
-    function spawnDebris(x, y, w, h, dir) {
-      if (w < 0.75) return;
-      debris.push({
-        x,
-        y,
-        w,
-        h,
-        vx: dir * (90 + Math.random() * 160),
-        vy: -40 - Math.random() * 50,
-        rot: 0,
-        vr: dir * (1.4 + Math.random() * 2.2),
-        alpha: 1,
-        cutLeft: dir > 0,
-        cutRight: dir < 0,
-      });
-    }
-
-    function spawnFloater(text, x, worldY, gold) {
-      floaters.push({
-        text,
-        x,
-        y: worldY - cameraY,
-        life: 1,
-        gold,
-      });
     }
 
     function placeBlock(piece, below, left, right) {
@@ -335,14 +530,11 @@
         cutLeft = false;
         cutRight = false;
         score += 500;
-        shake = 7;
-        scoreFlash = 0.55;
-        spawnFloater("+500", x + w / 2, piece.y, true);
+        perfects += 1;
+        scoreCyanUntil = clock + 0.12;
+        shakeT0 = clock;
       } else {
-        if (cutLeft) spawnDebris(piece.x, piece.y, left - piece.x, piece.h, -1);
-        if (cutRight) spawnDebris(right, piece.y, piece.x + piece.w - right, piece.h, 1);
         score += 100;
-        spawnFloater("+100", x + w / 2, piece.y, false);
       }
 
       blocks.push({
@@ -353,11 +545,32 @@
         label: piece.label,
         cutLeft,
         cutRight,
-        glow: aligned ? 1 : 0,
+        glow: 0,
+        flashT0: aligned ? clock : -1,
+        cutT0: cutRight ? clock : -1,
       });
+      const placed = toWorld(blocks[blocks.length - 1], blocks.length - 1);
+      if (aligned) {
+        fx.push({ type: "rings", t0: clock, dur: 0.6, block: placed });
+        fx.push({ type: "popup", t0: clock, dur: 0.9, kind: "perfect", block: placed });
+      } else {
+        if (cutLeft && left - piece.x >= 0.75) {
+          const span = spanWorld(piece.x, left - piece.x);
+          shards.push({ x0: span.x0, w: span.w, y0: placed.y0, h: GEOM.blockH, side: "left", t0: clock });
+        }
+        if (cutRight && piece.x + piece.w - right >= 0.75) {
+          const span = spanWorld(right, piece.x + piece.w - right);
+          shards.push({ x0: span.x0, w: span.w, y0: placed.y0, h: GEOM.blockH, side: "right", t0: clock });
+        }
+        const cutX = cutRight ? placed.x0 + placed.w : placed.x0;
+        fx.push({ type: "cut", t0: clock, dur: 0.25, x: cutX, y0: placed.y0, h: GEOM.blockH });
+        fx.push({ type: "popup", t0: clock, dur: 0.9, kind: "slice", block: placed });
+      }
       hSpeed = Math.min(MAX_SPEED, hSpeed + 18);
-      spawnMover(w);
+      pendingWidth = w;
+      spawnAt = clock + 0.3;
       paintScore();
+      syncHint();
     }
 
     function updateMover(dt) {
@@ -389,8 +602,21 @@
         const left = Math.max(falling.x, below.x);
         const right = Math.min(falling.x + falling.w, below.x + below.w);
         if (right - left <= 0) {
-          falling.miss = true;
-          falling.missDir = falling.x + falling.w / 2 < below.x + below.w / 2 ? -1 : 1;
+          const missDir = falling.x + falling.w / 2 < below.x + below.w / 2 ? -1 : 1;
+          const top = toWorld(below, blocks.length - 1);
+          const span = spanWorld(falling.x, falling.w);
+          shards.push({
+            x0: span.x0,
+            w: span.w,
+            y0: top.y0 + top.h,
+            h: GEOM.blockH,
+            side: missDir < 0 ? "left" : "right",
+            t0: clock,
+          });
+          falling = null;
+          spawnAt = -1;
+          gameOverAt = clock + 0.75;
+          return;
         } else {
           falling.y = below.y - falling.h;
           placeBlock(falling, below, left, right);
@@ -417,273 +643,113 @@
     function update(dt) {
       const attract = mode === "start" || mode === "playing";
       if (falling && (mode === "playing" || falling.miss)) updateFalling(dt);
-      if (!falling && mover && attract) updateMover(dt);
+      if (spawnAt >= 0 && clock >= spawnAt && mode === "playing" && gameOverAt < 0) {
+        spawnMover(pendingWidth);
+        spawnAt = -1;
+      }
+      if (mode === "start") updateAttract(dt);
+      else if (!falling && mover && attract) updateMover(dt);
       if (blocks.length) easeCamera(dt);
-
-      for (let i = debris.length - 1; i >= 0; i--) {
-        const bit = debris[i];
-        bit.vy += GRAVITY * dt;
-        bit.x += bit.vx * dt;
-        bit.y += bit.vy * dt;
-        bit.rot += bit.vr * dt;
-        bit.alpha -= dt * 0.55;
-        if (bit.alpha <= 0 || bit.y - cameraY > viewH + 160) debris.splice(i, 1);
+      easeView(dt);
+      if (gameOverAt >= 0 && clock >= gameOverAt && mode === "playing") {
+        gameOverAt = -1;
+        setMode("gameover");
       }
-
-      for (let i = floaters.length - 1; i >= 0; i--) {
-        const floater = floaters[i];
-        floater.y -= 38 * dt;
-        floater.life -= dt;
-        if (floater.life <= 0) floaters.splice(i, 1);
-      }
-
-      for (const block of blocks) {
-        if (block.glow > 0) block.glow = Math.max(0, block.glow - dt * 1.15);
-      }
-
-      if (scoreFlash > 0) scoreFlash = Math.max(0, scoreFlash - dt);
-      if (shake > 0) shake = Math.max(0, shake - dt * 22);
       paintScore();
     }
 
-    function drawChassis(x, y, w, h, label, opts) {
-      if (w < 1 || h < 1) return;
-      const cutLeft = !!opts.cutLeft;
-      const cutRight = !!opts.cutRight;
-      const hot = !!opts.hot;
-      const glow = opts.glow || 0;
-      const depth = Math.min(16, Math.max(9, h * 0.26));
-      const skew = depth * 0.7;
-
-      ctx.fillStyle = glow > 0 ? "#f5db2c" : (hot ? "#2c71f5" : "#1b467f");
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + skew, y - depth);
-      ctx.lineTo(x + w + skew, y - depth);
-      ctx.lineTo(x + w, y);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = cutRight ? "#d4894a" : "#070f1c";
-      ctx.beginPath();
-      ctx.moveTo(x + w, y);
-      ctx.lineTo(x + w + skew, y - depth);
-      ctx.lineTo(x + w + skew, y + h - depth);
-      ctx.lineTo(x + w, y + h);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = hot ? "#12263f" : "#0d1e34";
-      ctx.fillRect(x, y, w, h);
-
-      if (cutLeft) {
-        ctx.fillStyle = "#d4894a";
-        ctx.fillRect(x, y, Math.min(5, w), h);
-      }
-
-      ctx.fillStyle = glow > 0 ? "#fff4b0" : "rgba(232, 240, 255, 0.22)";
-      ctx.fillRect(x, y, w, 1);
-
-      if (label && w > 86 && h > 22) {
-        const size = Math.max(11, Math.min(13, Math.floor(h * 0.28)));
-        ctx.font = `500 ${size}px "IBM Plex Mono", ui-monospace, monospace`;
-        ctx.textAlign = "left";
-        ctx.textBaseline = "middle";
-        ctx.letterSpacing = "0.08em";
-        const text = label.toUpperCase();
-        if (ctx.measureText(text).width <= w - 32) {
-          ctx.fillStyle = "rgba(232, 240, 255, 0.8)";
-          ctx.fillText(text, x + 14, y + h * 0.56);
-        }
-        ctx.letterSpacing = "0px";
-      }
-
-      if (w > 64 && h > 20) {
-        ctx.fillStyle = "#f5db2c";
-        ctx.fillRect(x + w - 22, y + h * 0.5 - 2, 4, 4);
-      }
-    }
-
-    function drawPiece(x, y, w, h, label, rot, alpha, opts) {
-      ctx.save();
-      ctx.translate(x + w / 2, y + h / 2);
-      if (rot) ctx.rotate(rot);
-      ctx.globalAlpha = alpha;
-      drawChassis(-w / 2, -h / 2, w, h, label, opts);
-      ctx.restore();
-    }
-
-    function drawBackground(time) {
-      const sky = ctx.createLinearGradient(0, 0, 0, viewH);
-      sky.addColorStop(0, "#0a3d86");
-      sky.addColorStop(0.28, "#002353");
-      sky.addColorStop(1, "#000814");
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, viewW, viewH);
-
-      const pulse = 0.85 + Math.sin(time * 0.6) * 0.15;
-      const shaft = ctx.createRadialGradient(viewW * 0.5, -20, 10, viewW * 0.5, viewH * 0.12, viewW * 0.72);
-      shaft.addColorStop(0, `rgba(255, 176, 32, ${0.14 * pulse})`);
-      shaft.addColorStop(0.32, `rgba(44, 113, 245, ${0.18 * pulse})`);
-      shaft.addColorStop(1, "rgba(44, 113, 245, 0)");
-      ctx.fillStyle = shaft;
-      ctx.fillRect(0, 0, viewW, viewH);
-
-      const parallax = -cameraY * 0.15;
-      const towers = [
-        [0.04, 0.3, 0.1, 0.46],
-        [0.16, 0.42, 0.055, 0.32],
-        [0.8, 0.26, 0.13, 0.5],
-        [0.92, 0.44, 0.07, 0.3],
-      ];
-      for (const [nx, ny, nw, nh] of towers) {
-        const x = nx * viewW;
-        const y = ny * viewH + parallax;
-        const tw = nw * viewW;
-        const th = nh * viewH;
-        ctx.fillStyle = "rgba(1, 14, 36, 0.72)";
-        ctx.fillRect(x, y, tw, th);
-        ctx.fillStyle = "rgba(44, 113, 245, 0.22)";
-        ctx.fillRect(x + tw * 0.18, y + 16, 2, th * 0.35);
-        ctx.fillStyle = "rgba(245, 219, 44, 0.35)";
-        ctx.fillRect(x + tw * 0.72, y + th * 0.2, 3, 3);
-      }
-
-      if (blocks.length) {
-        const anchor = blocks[0];
-        const sx = anchor.x + anchor.w / 2;
-        const sy = anchor.y - cameraY + anchor.h;
-        const pool = ctx.createRadialGradient(sx, sy, 8, sx, sy, anchor.w);
-        pool.addColorStop(0, "rgba(44, 113, 245, 0.2)");
-        pool.addColorStop(1, "rgba(44, 113, 245, 0)");
-        ctx.fillStyle = pool;
-        ctx.beginPath();
-        ctx.ellipse(sx, sy, anchor.w * 0.72, 28, 0, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      const vanishY = viewH * 0.64;
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, vanishY, viewW, viewH - vanishY);
-      ctx.clip();
-      ctx.lineWidth = 1;
-      const shift = ((-cameraY * 0.25) % 36 + 36) % 36;
-      for (let i = 0; i < 8; i++) {
-        const t = i / 7;
-        const y = vanishY + t * t * (viewH - vanishY) + shift * t;
-        ctx.strokeStyle = `rgba(11, 73, 173, ${0.12 + t * 0.38})`;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(viewW, y);
-        ctx.stroke();
-      }
-      ctx.strokeStyle = "rgba(44, 113, 245, 0.22)";
-      for (let i = -7; i <= 7; i++) {
-        ctx.beginPath();
-        ctx.moveTo(viewW * 0.5, vanishY);
-        ctx.lineTo(viewW * 0.5 + i * viewW * 0.11, viewH + 30);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      const vignette = ctx.createRadialGradient(viewW * 0.5, viewH * 0.42, viewH * 0.18, viewW * 0.5, viewH * 0.5, viewH * 0.78);
-      vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
-      vignette.addColorStop(1, "rgba(0, 8, 20, 0.78)");
-      ctx.fillStyle = vignette;
-      ctx.fillRect(0, 0, viewW, viewH);
-
-      if (noisePattern) {
-        ctx.save();
-        ctx.globalAlpha = 0.045;
-        ctx.fillStyle = noisePattern;
-        ctx.fillRect(0, 0, viewW, viewH);
-        ctx.restore();
-      }
-    }
-
-    function drawWorld() {
-      const amp = shake > 0 ? shake : 0;
-      const ox = amp ? (Math.random() - 0.5) * amp : 0;
-      const oy = amp ? (Math.random() - 0.5) * amp : 0;
-
-      ctx.save();
-      ctx.translate(ox, oy - cameraY);
-
-      if (mover && blocks.length && (mode === "start" || mode === "playing")) {
-        const below = blocks[blocks.length - 1];
-        const top = mover.y + mover.h;
-        if (below.y > top) {
-          ctx.strokeStyle = "rgba(44, 113, 245, 0.16)";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(below.x + 0.5, top);
-          ctx.lineTo(below.x + 0.5, below.y);
-          ctx.moveTo(below.x + below.w - 0.5, top);
-          ctx.lineTo(below.x + below.w - 0.5, below.y);
-          ctx.stroke();
-        }
-      }
-
-      for (const block of blocks) {
-        const screenY = block.y - cameraY;
-        if (screenY > viewH + 120 || screenY + block.h < -120) continue;
-        drawPiece(block.x, block.y, block.w, block.h, block.label, 0, 1, {
-          cutLeft: block.cutLeft,
-          cutRight: block.cutRight,
-          glow: block.glow,
-          shadow: false,
-        });
-      }
-
-      for (const bit of debris) {
-        drawPiece(bit.x, bit.y, bit.w, bit.h, "", bit.rot, Math.max(0, bit.alpha), {
-          cutLeft: bit.cutLeft,
-          cutRight: bit.cutRight,
-          shadow: false,
-        });
-      }
-
-      if (falling) {
-        drawPiece(falling.x, falling.y, falling.w, falling.h, falling.label, falling.rot, 1, { hot: true });
-      } else if (mover) {
-        drawPiece(mover.x, mover.y, mover.w, mover.h, mover.label, 0, 1, { hot: true });
-      }
-
-      ctx.restore();
-    }
-
-    function drawFloaters() {
-      ctx.save();
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.font = '600 22px "IBM Plex Mono", ui-monospace, monospace';
-      for (const floater of floaters) {
-        ctx.globalAlpha = Math.max(0, Math.min(1, floater.life));
-        ctx.fillStyle = floater.gold ? "#f5db2c" : "#e8f0ff";
-        ctx.fillText(floater.text, floater.x, floater.y);
-      }
-      ctx.restore();
-    }
-
     function paintScore() {
-      scoreEl.textContent = String(score);
-      scoreEl.style.color = scoreFlash > 0 ? "#f5db2c" : "#e8f0ff";
+      const cyan = clock < scoreCyanUntil;
+      scoreEl.textContent = score.toLocaleString("en-US");
+      scoreEl.style.color = cyan ? "#5BE3FF" : "#F4F8FF";
+      scoreEl.style.textShadow = cyan ? "0 0 18px rgba(91,227,255,.6)" : "none";
     }
 
     function render(time) {
       ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      drawBackground(time);
-      drawWorld();
-      drawFloaters();
+      if (backdrop) ctx.drawImage(backdrop, 0, 0, viewW, viewH);
+      if (!blocks.length || !view) {
+        if (grain) R.drawGrain(ctx, grain, viewW, viewH);
+        return;
+      }
+
+      const showingAttract = mode === "start" && attractStack;
+      const cloud = showingAttract
+        ? attractStack.map((world) => ({ world, flash: 0, cut: 0 }))
+        : blocks.map((block, i) => ({ world: toWorld(block, i), flash: flashAmount(block), cut: cutAmount(block) }));
+      const topIndex = cloud.length - 1;
+      const top = cloud[topIndex].world;
+
+      const stackTop = view.p(top.x0 + top.w / 2, GEOM.depth / 2, top.y0 + top.h);
+      R.drawAtmosphere(ctx, viewW, viewH, sceneK, time, stackTop[0], stackTop[1]);
+
+      ctx.save();
+      if (shakeT0 >= 0) {
+        const [sx, sy] = R.shakeOffset((clock - shakeT0) / 0.3, sceneK);
+        ctx.translate(sx, sy);
+      }
+
+      if (floor && view.oy + 160 * sceneK > 0 && view.oy - 200 * sceneK < viewH) {
+        R.drawFloor(ctx, floor, view);
+      }
+
+      const base = { x0: 0, w: GEOM.baseW, y0: 0, h: GEOM.baseH, label: "On-prem" };
+      const baseScreenY = view.p(base.x0, 0, base.y0)[1];
+      if (baseScreenY - 120 * sceneK <= viewH) {
+        R.drawBlock(ctx, view, base, { kind: "base" });
+      }
+
+      for (let i = 0; i <= topIndex; i++) {
+        const entry = cloud[i];
+        const yScreen = view.p(entry.world.x0, 0, entry.world.y0)[1];
+        if (yScreen - 120 * sceneK > viewH) continue;
+        R.drawBlock(ctx, view, entry.world, {
+          kind: "cloud",
+          t: 1 - (topIndex - i) / 12,
+          flash: entry.flash,
+          cut: entry.cut,
+        });
+      }
+
+      const active = showingAttract ? attractActive : activeWorld(top);
+      const showActive = active && (showingAttract || mode === "playing");
+      if (showActive && !showingAttract && mover && !falling && mode === "playing") {
+        R.drawDropGuide(ctx, view, top, active);
+        R.drawTrail(ctx, view, active, mover.dir);
+      }
+      if (showActive) R.drawBlock(ctx, view, active, { kind: "active" });
+
+      for (const effect of fx) {
+        const progress = (clock - effect.t0) / effect.dur;
+        if (effect.type === "rings") R.drawPerfectRings(ctx, view, effect.block, progress);
+        if (effect.type === "cut") R.drawCutLine(ctx, view, effect.x, effect.y0, effect.h, progress);
+      }
+      shards = shards.filter((shard) => R.drawShard(ctx, view, shard, clock - shard.t0));
+
+      ctx.restore();
+
+      if (motes) R.drawMotes(ctx, motes, time, sceneK);
+      R.drawFog(ctx, viewW, viewH, sceneK);
+
+      for (const effect of fx) {
+        if (effect.type !== "popup") continue;
+        const block = effect.block;
+        const point = view.p(block.x0 + block.w / 2, GEOM.depth / 2, block.y0 + block.h);
+        const x = effect.kind === "slice" ? Math.min(point[0] + 70 * sceneK, viewW - 60 * sceneK) : point[0];
+        R.drawPopup(ctx, x, point[1] - 70 * sceneK, effect.kind, (clock - effect.t0) / effect.dur, sceneK);
+      }
+      fx = fx.filter((effect) => clock - effect.t0 < effect.dur);
+
+      if (grain) R.drawGrain(ctx, grain, viewW, viewH);
     }
 
     function frame(now) {
       if (!lastNow) lastNow = now;
       lastDt = Math.min(0.034, (now - lastNow) / 1000) || lastDt;
       lastNow = now;
+      clock = now / 1000;
       update(lastDt);
-      render(now / 1000);
+      render(clock);
       requestAnimationFrame(frame);
     }
 
@@ -692,7 +758,7 @@
       const initials = initialsInput.value.replace(/\s/g, "").toUpperCase().slice(0, 3);
       initialsInput.value = initials;
       if (initials.length !== 3) {
-        initialsInput.style.borderColor = "#f5db2c";
+        initialsInput.style.borderColor = "#FFB23F";
         initialsInput.focus();
         return;
       }
@@ -723,7 +789,7 @@
     initialsInput.addEventListener("input", () => {
       const clean = initialsInput.value.replace(/\s/g, "").toUpperCase().slice(0, 3);
       if (clean !== initialsInput.value) initialsInput.value = clean;
-      initialsInput.style.borderColor = "rgba(255,255,255,0.15)";
+      initialsInput.style.borderColor = "#3AA0FF";
     });
 
     initialsInput.addEventListener("keydown", (event) => {
@@ -758,15 +824,19 @@
     window.addEventListener("resize", resize);
     if (window.visualViewport) window.visualViewport.addEventListener("resize", resize);
 
+    grain = StackRenderer.buildGrain();
     resize();
-    makeNoise();
+    buildAttract();
     resetWorld();
     setMode("start");
-    if (document.fonts && document.fonts.load) {
-      document.fonts.load('500 16px "IBM Plex Mono"');
-      document.fonts.load('600 16px Manrope');
-    }
-    requestAnimationFrame(frame);
+    const startLoop = () => requestAnimationFrame(frame);
+    const fontsReady = document.fonts
+      ? Promise.all([
+          document.fonts.load("500 8px 'Martian Mono'"),
+          document.fonts.load("800 46px 'Archivo'"),
+        ]).catch(() => {})
+      : Promise.resolve();
+    fontsReady.then(startLoop, startLoop);
   </script>
 </body>
 </html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cloud Stacker — Game over</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Martian+Mono:wdth,wght@75..112.5,100..800&amp;display=swap">
+<style>
+body{margin:0}
+.layer{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.lbl{font-family:'Martian Mono',ui-monospace,monospace;font-size:8px;font-weight:500;letter-spacing:.14em;fill:rgba(240,248,255,.9)}
+.neon{filter:drop-shadow(0 0 3px rgba(91,227,255,.9))}
+.caret{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) .15s both}
+@keyframes rise{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.save:hover{background:#0A7BDA}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #02060F; font-family: 'Archivo', ui-sans-serif, system-ui, sans-serif; color: #F4F8FF">
+
+<div style="position: absolute; inset: -20px; filter: blur(7px) saturate(.8)">
+<div style="position: absolute; inset: 0; background: radial-gradient(130% 75% at 50% 40%, #0B3470 0%, #071D45 36%, #040C22 68%, #02060F 100%)"></div>
+<div style="position: absolute; left: -50px; top: 190px; width: 530px; height: 400px; background: radial-gradient(closest-side, rgba(0,120,212,.5), rgba(0,120,212,0))"></div>
+<svg width="390" height="844" aria-hidden="true" style="position: absolute; left: 20px; top: 20px; overflow: visible">
+<defs>
+<linearGradient id="g-sheen" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.32"></stop><stop offset="0.65" stop-color="#fff" stop-opacity="0"></stop></linearGradient>
+<linearGradient id="g-side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"></stop><stop offset="1" stop-color="#000" stop-opacity="0.32"></stop></linearGradient>
+</defs>
+</svg>
+<sc-for list="{{blocks}}" as="b" hint-placeholder-count="14">
+<svg width="390" height="844" aria-hidden="true" style="position: absolute; left: 20px; top: 20px; overflow: visible">
+<polygon points="{{b.left}}" fill="{{b.cLeft}}"></polygon>
+<polygon points="{{b.left}}" fill="url(#g-side)"></polygon>
+<polygon points="{{b.right}}" fill="{{b.cRight}}"></polygon>
+<polygon points="{{b.top}}" fill="{{b.cTop}}"></polygon>
+<polygon points="{{b.top}}" fill="url(#g-sheen)"></polygon>
+<polyline points="{{b.edge}}" fill="none" stroke="{{b.cEdge}}" stroke-width="1.2" opacity="{{b.op}}"></polyline>
+</svg>
+</sc-for>
+<svg width="390" height="844" aria-hidden="true" style="position: absolute; left: 20px; top: 20px; overflow: visible">
+<g transform="{{missT}}">
+<polygon points="{{miss.left}}" fill="hsl(204,70%,30%)"></polygon>
+<polygon points="{{miss.right}}" fill="hsl(206,72%,18%)"></polygon>
+<polygon points="{{miss.top}}" fill="hsl(194,96%,68%)"></polygon>
+</g>
+</svg>
+</div>
+<div style="position: absolute; inset: 0; background: rgba(2,6,15,.6)"></div>
+
+<div class="rise" style="position: absolute; left: 20px; right: 20px; top: 150px; box-sizing: border-box; padding: 28px 24px 24px; border-radius: 22px; background: #061430; border: 1px solid rgba(110,170,255,.22); box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4); display: flex; flex-direction: column; gap: 22px">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFB23F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5h8"></path><path d="M3 9.5h6"></path><path d="M10.5 3.5l3.5 4.5-2.5 1.5"></path></svg>
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .34em; color: #FFB23F">GAME OVER</span>
+</div>
+<h2 style="margin: 0; font-size: 36px; line-height: 1; font-weight: 800; font-stretch: 115%; letter-spacing: -0.02em; color: #F4F8FF">Stack crashed!</h2>
+</div>
+
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 18px 18px 16px; border-radius: 14px; background: #0A1D42">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 10px; font-weight: 500; letter-spacing: .3em; color: #8DA2C4">FINAL SCORE</span>
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 54px; font-weight: 600; font-stretch: 87.5%; line-height: .95; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: #FFFFFF">3,400</span>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding-bottom: 4px">
+<span style="font-size: 13px; color: #A9BDDB"><strong style="color: #F4F8FF; font-weight: 700">14</strong> floors</span>
+<span style="font-size: 13px; color: #A9BDDB"><strong style="color: #5BE3FF; font-weight: 700">5</strong> perfect</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+<label for="initials" style="font-size: 14px; font-weight: 600; color: #DCE8FA">Your initials for the leaderboard</label>
+<div style="position: relative; display: flex; gap: 10px">
+<div style="flex: 1; height: 76px; border-radius: 12px; background: #0A1D42; border: 1px solid #24467A; display: flex; align-items: center; justify-content: center; font-family: 'Martian Mono', ui-monospace, monospace; font-size: 38px; font-weight: 600; color: #FFFFFF">K</div>
+<div style="flex: 1; height: 76px; border-radius: 12px; background: #0A1D42; border: 1px solid #24467A; display: flex; align-items: center; justify-content: center; font-family: 'Martian Mono', ui-monospace, monospace; font-size: 38px; font-weight: 600; color: #FFFFFF">R</div>
+<div style="flex: 1; height: 76px; border-radius: 12px; background: #0B2350; border: 1.5px solid #3AA0FF; box-shadow: 0 0 0 4px rgba(0,120,212,.28); display: flex; align-items: center; justify-content: center">
+<div class="caret" style="width: 3px; height: 36px; border-radius: 2px; background: #5BE3FF"></div>
+</div>
+<input id="initials" type="text" maxlength="3" autocapitalize="characters" autocomplete="off" value="KR" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; text-transform: uppercase">
+</div>
+</div>
+
+<button type="button" class="save" style="height: 58px; border: 0; border-radius: 14px; background: #0070C9; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; font-stretch: 115%; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 30px rgba(0,112,201,.4)">Save score</button>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const k = 1, D = 110, H = 22;
+    const C = 0.866 * k, S = 0.5 * k;
+    const ox = 169, oy = 690;
+    const f = (n) => n.toFixed(1);
+    const P = (x, z, y) => [ox + (x - z) * C, oy + (x + z) * S - y * k];
+    const pl = (a) => a.map((p) => f(p[0]) + ',' + f(p[1])).join(' ');
+    const box = (x0, w, y0, h) => {
+      const x1 = x0 + w, yt = y0 + h;
+      return {
+        top: pl([P(x0, 0, yt), P(x1, 0, yt), P(x1, D, yt), P(x0, D, yt)]),
+        left: pl([P(x0, D, yt), P(x1, D, yt), P(x1, D, y0), P(x0, D, y0)]),
+        right: pl([P(x1, 0, yt), P(x1, D, yt), P(x1, D, y0), P(x1, 0, y0)]),
+        edge: pl([P(x0, D, yt), P(x1, D, yt), P(x1, 0, yt)])
+      };
+    };
+    const tint = (t) => {
+      const h = Math.round(216 - t * 18);
+      return {
+        cTop: 'hsl(' + h + ',92%,' + Math.round(48 + t * 16) + '%)',
+        cLeft: 'hsl(' + h + ',70%,' + Math.round(19 + t * 9) + '%)',
+        cRight: 'hsl(' + h + ',72%,' + Math.round(11 + t * 6) + '%)',
+        cEdge: 'hsl(' + (h - 10) + ',100%,' + Math.round(74 + t * 12) + '%)',
+        op: (0.45 + t * 0.55).toFixed(2)
+      };
+    };
+    const layers = [
+      [0, 170], [0, 170], [0, 166], [4, 162], [4, 162], [4, 156], [10, 150],
+      [10, 150], [10, 144], [16, 138], [16, 138], [20, 134], [20, 128], [58, 90]
+    ];
+    const n = layers.length;
+    const blocks = layers.map((L, i) => Object.assign({}, box(L[0], L[1], i * H, H), tint(i / (n - 1))));
+    const miss = box(158, 90, n * H + 4, H);
+    const mc = P(203, D / 2, n * H + 15);
+    const missT = 'translate(58 150) rotate(38 ' + f(mc[0]) + ' ' + f(mc[1]) + ')';
+    return { blocks, miss, missT };
+  }
+}
+</script>
+</body>
+</html>

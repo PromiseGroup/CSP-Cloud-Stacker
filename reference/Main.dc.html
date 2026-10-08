@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cloud Stacker — Title</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Martian+Mono:wdth,wght@75..112.5,100..800&amp;display=swap">
+<style>
+body{margin:0}
+.layer{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.lbl{font-family:'Martian Mono',ui-monospace,monospace;font-size:8px;font-weight:500;letter-spacing:.14em;fill:rgba(240,248,255,.9)}
+.lbl-dim{font-family:'Martian Mono',ui-monospace,monospace;font-size:8px;font-weight:500;letter-spacing:.14em;fill:#8D9AB2}
+.neon{filter:drop-shadow(0 0 3px rgba(91,227,255,.9))}
+.glowA{filter:drop-shadow(0 0 16px rgba(91,227,255,.55))}
+.slide{animation:slide 2.6s cubic-bezier(.45,0,.55,1) infinite alternate}
+@keyframes slide{from{transform:translate(-61px,-35px)}to{transform:translate(17px,10px)}}
+.m1{animation:rise 9s linear infinite}
+.m2{animation:rise 11s linear infinite -4s}
+.m3{animation:rise 13s linear infinite -8s}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-170px);opacity:0}}
+.drift{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-18px)}to{transform:translateX(18px)}}
+.pulse{animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,120,212,.6),0 12px 32px rgba(0,112,201,.45)}100%{box-shadow:0 0 0 18px rgba(0,120,212,0),0 12px 32px rgba(0,112,201,.45)}}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #02060F; font-family: 'Archivo', ui-sans-serif, system-ui, sans-serif; color: #F4F8FF">
+
+<div style="position: absolute; inset: 0; background: radial-gradient(130% 75% at 50% 28%, #0B3470 0%, #071D45 36%, #040C22 68%, #02060F 100%)"></div>
+<div style="position: absolute; left: -70px; top: 60px; width: 530px; height: 380px; background: radial-gradient(closest-side, rgba(0,120,212,.55), rgba(0,120,212,0))"></div>
+
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<defs>
+<pattern id="t-lat" width="38.1" height="22" patternUnits="userSpaceOnUse"><path d="M0,0 L38.1,22 M38.1,0 L0,22" stroke="#6AB4FF" stroke-width="0.5" fill="none"></path></pattern>
+<radialGradient id="t-latFade" cx="50%" cy="30%" r="62%"><stop offset="0" stop-color="#fff" stop-opacity="1"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></radialGradient>
+<mask id="t-latMask"><rect width="390" height="844" fill="url(#t-latFade)"></rect></mask>
+</defs>
+<rect width="390" height="844" fill="url(#t-lat)" mask="url(#t-latMask)" opacity="0.09"></rect>
+</svg>
+
+<div class="drift" style="position: absolute; left: -90px; top: 92px; width: 300px; height: 90px; border-radius: 50%; background: radial-gradient(closest-side, rgba(150,195,255,.20), rgba(150,195,255,0)); filter: blur(8px)"></div>
+<div class="drift" style="position: absolute; right: -110px; top: 228px; width: 330px; height: 100px; border-radius: 50%; background: radial-gradient(closest-side, rgba(150,195,255,.16), rgba(150,195,255,0)); filter: blur(10px)"></div>
+
+<div style="position: absolute; left: 70px; top: -20px; width: 250px; height: 330px; background: linear-gradient(to top, rgba(91,227,255,.20), rgba(91,227,255,0)); filter: blur(22px)"></div>
+<div style="position: absolute; left: 15px; top: 420px; width: 360px; height: 150px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,120,212,.45), rgba(0,120,212,0))"></div>
+
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<defs>
+<radialGradient id="t-floorFade" gradientUnits="userSpaceOnUse" cx="195" cy="490" r="250" gradientTransform="translate(195 490) scale(1 0.55) translate(-195 -490)"><stop offset="0" stop-color="#fff" stop-opacity="1"></stop><stop offset="0.55" stop-color="#fff" stop-opacity="0.45"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></radialGradient>
+<mask id="t-floorMask" maskUnits="userSpaceOnUse" x="0" y="0" width="390" height="844"><rect width="390" height="844" fill="url(#t-floorFade)"></rect></mask>
+<linearGradient id="t-sheen" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.32"></stop><stop offset="0.65" stop-color="#fff" stop-opacity="0"></stop></linearGradient>
+<linearGradient id="t-side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"></stop><stop offset="1" stop-color="#000" stop-opacity="0.32"></stop></linearGradient>
+</defs>
+<path d="{{floorPath}}" stroke="#4FA6FF" stroke-width="0.7" fill="none" mask="url(#t-floorMask)" opacity="0.55"></path>
+<polygon points="{{pad1}}" fill="none" stroke="#5BE3FF" stroke-width="1" opacity="0.45"></polygon>
+<polygon points="{{pad2}}" fill="none" stroke="#5BE3FF" stroke-width="0.8" opacity="0.18"></polygon>
+</svg>
+
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<polygon points="{{base.left}}" fill="#1D2432"></polygon>
+<polygon points="{{base.left}}" fill="url(#t-side)"></polygon>
+<polygon points="{{base.right}}" fill="#121722"></polygon>
+<polygon points="{{base.top}}" fill="#353F53"></polygon>
+<polygon points="{{base.top}}" fill="url(#t-sheen)"></polygon>
+<polyline points="{{base.edge}}" fill="none" stroke="#6B7891" stroke-width="1" stroke-linejoin="round"></polyline>
+<path d="{{vents}}" stroke="#0B0F17" stroke-width="2" stroke-linecap="round" fill="none"></path>
+<text transform="{{base.tx}}" class="lbl-dim">ON-PREM</text>
+<circle cx="{{base.d1x}}" cy="{{base.d1y}}" r="1.6" fill="#FFB23F"></circle>
+</svg>
+
+<sc-for list="{{blocks}}" as="b" hint-placeholder-count="8">
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<polygon points="{{b.left}}" fill="{{b.cLeft}}"></polygon>
+<polygon points="{{b.left}}" fill="url(#t-side)"></polygon>
+<polygon points="{{b.right}}" fill="{{b.cRight}}"></polygon>
+<polygon points="{{b.top}}" fill="{{b.cTop}}"></polygon>
+<polygon points="{{b.top}}" fill="url(#t-sheen)"></polygon>
+<polyline class="neon" points="{{b.edge}}" fill="none" stroke="{{b.cEdge}}" stroke-width="1.2" stroke-linejoin="round" opacity="{{b.op}}"></polyline>
+<text transform="{{b.tx}}" class="lbl">{{b.label}}</text>
+<circle cx="{{b.d1x}}" cy="{{b.d1y}}" r="1.4" fill="#7CF5FF"></circle>
+<circle cx="{{b.d2x}}" cy="{{b.d2y}}" r="1.4" fill="#7CF5FF" opacity="0.4"></circle>
+</svg>
+</sc-for>
+
+<svg class="layer slide glowA" width="390" height="844" aria-hidden="true">
+<polygon points="{{act.left}}" fill="hsl(204,78%,34%)"></polygon>
+<polygon points="{{act.left}}" fill="url(#t-side)"></polygon>
+<polygon points="{{act.right}}" fill="hsl(206,80%,22%)"></polygon>
+<polygon points="{{act.top}}" fill="hsl(194,100%,74%)"></polygon>
+<polygon points="{{act.top}}" fill="url(#t-sheen)"></polygon>
+<polyline class="neon" points="{{act.edge}}" fill="none" stroke="#E9FDFF" stroke-width="1.4" stroke-linejoin="round"></polyline>
+<text transform="{{act.tx}}" class="lbl">AZURE AI</text>
+<circle cx="{{act.d1x}}" cy="{{act.d1y}}" r="1.4" fill="#E9FDFF"></circle>
+</svg>
+
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<path class="m1" d="{{motes1}}" fill="#BFEFFF"></path>
+<path class="m2" d="{{motes2}}" fill="#BFEFFF"></path>
+<path class="m3" d="{{motes3}}" fill="#BFEFFF"></path>
+</svg>
+
+<div style="position: absolute; left: 0; right: 0; top: 500px; height: 344px; background: linear-gradient(to bottom, rgba(2,6,15,0) 0%, rgba(2,6,15,.82) 38%, #02060F 70%)"></div>
+
+<div style="position: absolute; left: 24px; top: 26px; display: flex; align-items: center; gap: 10px">
+<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L20 7.5 L11 12 L2 7.5 Z" fill="#5BE3FF"></path><path d="M2 11 L11 15.5 L20 11" stroke="#2E9BFF" stroke-width="1.6" fill="none" stroke-linejoin="round"></path><path d="M2 14.5 L11 19 L20 14.5" stroke="#1C5FB8" stroke-width="1.6" fill="none" stroke-linejoin="round"></path></svg>
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .24em; color: #DCE8FA">CLOUD STACKER</span>
+</div>
+
+<div style="position: absolute; left: 24px; right: 24px; bottom: 32px; display: flex; flex-direction: column; gap: 26px">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<h1 style="margin: 0; font-size: 44px; line-height: .95; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; color: #F4F8FF">Build your<br>cloud <span style="color: #5BE3FF">stack.</span></h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A9BDDB; max-width: 310px; text-wrap: pretty">Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.</p>
+</div>
+<button type="button" class="pulse" style="height: 60px; border: 0; border-radius: 14px; background: #0070C9; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; font-stretch: 115%; letter-spacing: .18em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><circle cx="12" cy="12" r="8.5" opacity=".5"></circle></svg>
+Tap to start
+</button>
+</div>
+
+<svg class="layer" width="390" height="844" aria-hidden="true" style="mix-blend-mode: overlay; opacity: .16">
+<filter id="t-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+<rect width="390" height="844" filter="url(#t-grain)"></rect>
+</svg>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const k = 1, D = 110, H = 22;
+    const C = 0.866 * k, S = 0.5 * k;
+    const ox = 169, oy = 420;
+    const f = (n) => n.toFixed(1);
+    const P = (x, z, y) => [ox + (x - z) * C, oy + (x + z) * S - y * k];
+    const pl = (a) => a.map((p) => f(p[0]) + ',' + f(p[1])).join(' ');
+    const box = (x0, w, y0, h) => {
+      const x1 = x0 + w, yt = y0 + h;
+      const la = P(x0 + 9, D, y0 + h / 2 - 3.2);
+      const d1 = P(x1 - 11, D, y0 + h / 2);
+      const d2 = P(x1 - 18, D, y0 + h / 2);
+      return {
+        top: pl([P(x0, 0, yt), P(x1, 0, yt), P(x1, D, yt), P(x0, D, yt)]),
+        left: pl([P(x0, D, yt), P(x1, D, yt), P(x1, D, y0), P(x0, D, y0)]),
+        right: pl([P(x1, 0, yt), P(x1, D, yt), P(x1, D, y0), P(x1, 0, y0)]),
+        edge: pl([P(x0, D, yt), P(x1, D, yt), P(x1, 0, yt)]),
+        tx: 'matrix(' + C + ' ' + S + ' 0 ' + k + ' ' + f(la[0]) + ' ' + f(la[1]) + ')',
+        d1x: f(d1[0]), d1y: f(d1[1]), d2x: f(d2[0]), d2y: f(d2[1])
+      };
+    };
+    const tint = (t) => {
+      const h = Math.round(216 - t * 18);
+      return {
+        cTop: 'hsl(' + h + ',92%,' + Math.round(48 + t * 16) + '%)',
+        cLeft: 'hsl(' + h + ',70%,' + Math.round(19 + t * 9) + '%)',
+        cRight: 'hsl(' + h + ',72%,' + Math.round(11 + t * 6) + '%)',
+        cEdge: 'hsl(' + (h - 10) + ',100%,' + Math.round(74 + t * 12) + '%)',
+        op: (0.45 + t * 0.55).toFixed(2)
+      };
+    };
+    const BASE_H = 50;
+    const layers = [
+      ['COMPUTE', 0, 170], ['STORAGE', 0, 170], ['ENTRA', 6, 164], ['DEFENDER', 6, 164],
+      ['SHAREPOINT', 10, 160], ['COPILOT', 10, 160], ['INTUNE', 10, 152], ['FABRIC', 14, 148]
+    ];
+    const blocks = layers.map((L, i) => Object.assign({ label: L[0] }, box(L[1], L[2], BASE_H + i * H, H), tint(i / (layers.length - 1))));
+    const base = box(0, 170, 0, BASE_H);
+    let vents = '';
+    for (let r = 0; r < 4; r++) {
+      const a = P(112, D, 12 + r * 7), b = P(150, D, 12 + r * 7);
+      vents += 'M' + f(a[0]) + ',' + f(a[1]) + 'L' + f(b[0]) + ',' + f(b[1]);
+    }
+    let floorPath = '';
+    for (let i = -10; i <= 16; i++) {
+      const g = i * 22;
+      let a = P(-220, g, 0), b = P(420, g, 0);
+      floorPath += 'M' + f(a[0]) + ',' + f(a[1]) + 'L' + f(b[0]) + ',' + f(b[1]);
+      a = P(g, -260, 0); b = P(g, 380, 0);
+      floorPath += 'M' + f(a[0]) + ',' + f(a[1]) + 'L' + f(b[0]) + ',' + f(b[1]);
+    }
+    const pad = (e) => pl([P(-e, -e, 0), P(170 + e, -e, 0), P(170 + e, D + e, 0), P(-e, D + e, 0)]);
+    const act = box(60, 148, BASE_H + layers.length * H + 30, H);
+    const dot = (x, y, r) => 'M' + (x - r) + ',' + y + 'a' + r + ',' + r + ' 0 1,0 ' + (2 * r) + ',0a' + r + ',' + r + ' 0 1,0 ' + (-2 * r) + ',0';
+    const motes = [[46,470,1.1],[82,330,0.8],[300,420,1.2],[338,300,0.9],[120,250,0.7],[270,180,1],[60,160,0.8],[350,520,1],[230,120,0.7],[150,560,0.9],[318,600,0.8],[30,600,1]];
+    const mp = ['', '', ''];
+    motes.forEach((m, i) => { mp[i % 3] += dot(m[0], m[1], m[2]); });
+    return {
+      blocks, base, vents, floorPath, act,
+      pad1: pad(14), pad2: pad(34),
+      motes1: mp[0], motes2: mp[1], motes3: mp[2]
+    };
+  }
+}
+</script>
+</body>
+</html>

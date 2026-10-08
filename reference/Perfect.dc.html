@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cloud Stacker — Perfect drop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Martian+Mono:wdth,wght@75..112.5,100..800&amp;display=swap">
+<style>
+body{margin:0}
+.layer{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.lbl{font-family:'Martian Mono',ui-monospace,monospace;font-size:8px;font-weight:500;letter-spacing:.14em;fill:rgba(240,248,255,.9)}
+.lbl-ink{font-family:'Martian Mono',ui-monospace,monospace;font-size:8px;font-weight:600;letter-spacing:.14em;fill:#0A2A55}
+.neon{filter:drop-shadow(0 0 3px rgba(91,227,255,.9))}
+.flash{filter:drop-shadow(0 0 24px rgba(255,255,255,.8)) drop-shadow(0 0 6px rgba(160,240,255,.9))}
+.ring{animation:ring 1.4s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.ring2{animation:ring 1.4s ease-out infinite .35s;transform-box:fill-box;transform-origin:center}
+@keyframes ring{0%{transform:scale(.85);opacity:.95}100%{transform:scale(1.35);opacity:0}}
+.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) .4s 1 both}
+@keyframes shake{10%,90%{transform:translate(-1px,1px)}20%,80%{transform:translate(3px,-2px)}30%,50%,70%{transform:translate(-5px,2px)}40%,60%{transform:translate(5px,-1px)}}
+.pop{animation:pop 1.6s cubic-bezier(.2,.8,.2,1) infinite}
+@keyframes pop{0%{transform:translateY(16px) scale(.9);opacity:0}18%{transform:translateY(0) scale(1.04);opacity:1}70%{opacity:1}100%{transform:translateY(-22px);opacity:0}}
+.drift{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-18px)}to{transform:translateX(18px)}}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #02060F; font-family: 'Archivo', ui-sans-serif, system-ui, sans-serif; color: #F4F8FF">
+
+<div style="position: absolute; inset: 0; background: radial-gradient(130% 75% at 50% 40%, #0D3B7C 0%, #08204B 36%, #040C22 68%, #02060F 100%)"></div>
+<div style="position: absolute; left: -70px; top: 170px; width: 530px; height: 400px; background: radial-gradient(closest-side, rgba(0,120,212,.6), rgba(0,120,212,0))"></div>
+
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<defs>
+<pattern id="pf-lat" width="38.1" height="22" patternUnits="userSpaceOnUse"><path d="M0,0 L38.1,22 M38.1,0 L0,22" stroke="#6AB4FF" stroke-width="0.5" fill="none"></path></pattern>
+<radialGradient id="pf-latFade" cx="50%" cy="40%" r="62%"><stop offset="0" stop-color="#fff" stop-opacity="1"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></radialGradient>
+<mask id="pf-latMask"><rect width="390" height="844" fill="url(#pf-latFade)"></rect></mask>
+<linearGradient id="pf-sheen" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.32"></stop><stop offset="0.65" stop-color="#fff" stop-opacity="0"></stop></linearGradient>
+<linearGradient id="pf-side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"></stop><stop offset="1" stop-color="#000" stop-opacity="0.32"></stop></linearGradient>
+</defs>
+<rect width="390" height="844" fill="url(#pf-lat)" mask="url(#pf-latMask)" opacity="0.10"></rect>
+</svg>
+
+<div class="drift" style="position: absolute; left: -90px; top: 120px; width: 300px; height: 90px; border-radius: 50%; background: radial-gradient(closest-side, rgba(150,195,255,.18), rgba(150,195,255,0)); filter: blur(8px)"></div>
+<div class="drift" style="position: absolute; right: -110px; top: 250px; width: 330px; height: 100px; border-radius: 50%; background: radial-gradient(closest-side, rgba(150,195,255,.14), rgba(150,195,255,0)); filter: blur(10px)"></div>
+<div style="position: absolute; left: 124px; top: 0px; width: 142px; height: 420px; background: linear-gradient(to top, rgba(255,255,255,.26), rgba(255,255,255,0)); filter: blur(18px)"></div>
+
+<div class="shake" style="position: absolute; inset: 0">
+<sc-for list="{{blocks}}" as="b" hint-placeholder-count="13">
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<polygon points="{{b.left}}" fill="{{b.cLeft}}"></polygon>
+<polygon points="{{b.left}}" fill="url(#pf-side)"></polygon>
+<polygon points="{{b.right}}" fill="{{b.cRight}}"></polygon>
+<polygon points="{{b.top}}" fill="{{b.cTop}}"></polygon>
+<polygon points="{{b.top}}" fill="url(#pf-sheen)"></polygon>
+<polyline class="neon" points="{{b.edge}}" fill="none" stroke="{{b.cEdge}}" stroke-width="1.2" stroke-linejoin="round" opacity="{{b.op}}"></polyline>
+<text transform="{{b.tx}}" class="lbl">{{b.label}}</text>
+<circle cx="{{b.d1x}}" cy="{{b.d1y}}" r="1.4" fill="#7CF5FF"></circle>
+<circle cx="{{b.d2x}}" cy="{{b.d2y}}" r="1.4" fill="#7CF5FF" opacity="0.4"></circle>
+</svg>
+</sc-for>
+
+<svg class="layer flash" width="390" height="844" aria-hidden="true">
+<polygon points="{{land.left}}" fill="hsl(198,85%,80%)"></polygon>
+<polygon points="{{land.right}}" fill="hsl(202,70%,60%)"></polygon>
+<polygon points="{{land.top}}" fill="#FFFFFF"></polygon>
+<polyline points="{{land.edge}}" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"></polyline>
+<text transform="{{land.tx}}" class="lbl-ink">COPILOT</text>
+</svg>
+
+<svg class="layer" width="390" height="844" aria-hidden="true">
+<polygon class="ring" points="{{ring1}}" fill="none" stroke="#FFFFFF" stroke-width="1.6"></polygon>
+<polygon class="ring2" points="{{ring2}}" fill="none" stroke="#5BE3FF" stroke-width="1.2"></polygon>
+<path d="{{burst}}" stroke="#DFF8FF" stroke-width="1.4" stroke-linecap="round" opacity="0.85"></path>
+</svg>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 220px; background: linear-gradient(to bottom, rgba(2,6,15,0), rgba(2,6,15,.75) 55%, #02060F)"></div>
+
+<div class="pop" style="position: absolute; left: 0; right: 0; top: 252px; display: flex; flex-direction: column; align-items: center; gap: 2px">
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .4em; color: #5BE3FF; padding-left: .4em">PERFECT</span>
+<span style="font-size: 46px; line-height: 1; font-weight: 800; font-stretch: 118%; letter-spacing: -0.02em; color: #FFFFFF; text-shadow: 0 0 22px rgba(91,227,255,.85), 0 0 2px rgba(255,255,255,.9)">+500</span>
+</div>
+
+<div style="position: absolute; left: 22px; top: 26px; opacity: .85">
+<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L20 7.5 L11 12 L2 7.5 Z" fill="#5BE3FF"></path><path d="M2 11 L11 15.5 L20 11" stroke="#2E9BFF" stroke-width="1.6" fill="none" stroke-linejoin="round"></path><path d="M2 14.5 L11 19 L20 14.5" stroke="#1C5FB8" stroke-width="1.6" fill="none" stroke-linejoin="round"></path></svg>
+</div>
+
+<div style="position: absolute; right: 22px; top: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 10px; font-weight: 500; letter-spacing: .32em; color: #7F93B5">SCORE</span>
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 40px; font-weight: 600; font-stretch: 87.5%; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: #5BE3FF; text-shadow: 0 0 18px rgba(91,227,255,.6)">3,800</span>
+</div>
+
+<svg class="layer" width="390" height="844" aria-hidden="true" style="mix-blend-mode: overlay; opacity: .16">
+<filter id="pf-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+<rect width="390" height="844" filter="url(#pf-grain)"></rect>
+</svg>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const k = 1, D = 110, H = 22;
+    const C = 0.866 * k, S = 0.5 * k;
+    const ox = 169, oy = 666;
+    const f = (n) => n.toFixed(1);
+    const P = (x, z, y) => [ox + (x - z) * C, oy + (x + z) * S - y * k];
+    const pl = (a) => a.map((p) => f(p[0]) + ',' + f(p[1])).join(' ');
+    const box = (x0, w, y0, h) => {
+      const x1 = x0 + w, yt = y0 + h;
+      const la = P(x0 + 9, D, y0 + h / 2 - 3.2);
+      const d1 = P(x1 - 11, D, y0 + h / 2);
+      const d2 = P(x1 - 18, D, y0 + h / 2);
+      return {
+        top: pl([P(x0, 0, yt), P(x1, 0, yt), P(x1, D, yt), P(x0, D, yt)]),
+        left: pl([P(x0, D, yt), P(x1, D, yt), P(x1, D, y0), P(x0, D, y0)]),
+        right: pl([P(x1, 0, yt), P(x1, D, yt), P(x1, D, y0), P(x1, 0, y0)]),
+        edge: pl([P(x0, D, yt), P(x1, D, yt), P(x1, 0, yt)]),
+        tx: 'matrix(' + C + ' ' + S + ' 0 ' + k + ' ' + f(la[0]) + ' ' + f(la[1]) + ')',
+        d1x: f(d1[0]), d1y: f(d1[1]), d2x: f(d2[0]), d2y: f(d2[1])
+      };
+    };
+    const tint = (t) => {
+      const h = Math.round(216 - t * 18);
+      return {
+        cTop: 'hsl(' + h + ',92%,' + Math.round(48 + t * 16) + '%)',
+        cLeft: 'hsl(' + h + ',70%,' + Math.round(19 + t * 9) + '%)',
+        cRight: 'hsl(' + h + ',72%,' + Math.round(11 + t * 6) + '%)',
+        cEdge: 'hsl(' + (h - 10) + ',100%,' + Math.round(74 + t * 12) + '%)',
+        op: (0.45 + t * 0.55).toFixed(2)
+      };
+    };
+    const layers = [
+      ['COMPUTE', 0, 170], ['STORAGE', 0, 170], ['ENTRA', 0, 166], ['DEFENDER', 4, 162],
+      ['SHAREPOINT', 4, 162], ['COPILOT', 4, 156], ['INTUNE', 10, 150], ['FABRIC', 10, 150],
+      ['TEAMS', 10, 144], ['AZURE SQL', 16, 138], ['SENTINEL', 16, 138], ['PURVIEW', 20, 134],
+      ['COMPUTE', 20, 128]
+    ];
+    const n = layers.length;
+    const blocks = layers.map((L, i) => Object.assign({ label: L[0] }, box(L[1], L[2], i * H, H), tint(i / (n - 1))));
+    const ly = n * H, lx = 20, lw = 128, yt = ly + H;
+    const land = box(lx, lw, ly, H);
+    const ring = (e) => pl([P(lx - e, -e, yt), P(lx + lw + e, -e, yt), P(lx + lw + e, D + e, yt), P(lx - e, D + e, yt)]);
+    const c = P(lx + lw / 2, D / 2, yt);
+    let burst = '';
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2 + 0.26;
+      const r1 = 118 + (i % 2) * 14, r2 = r1 + 12 + (i % 3) * 6;
+      const cx = Math.cos(a), cy = Math.sin(a) * 0.55;
+      burst += 'M' + f(c[0] + cx * r1) + ',' + f(c[1] + cy * r1) + 'L' + f(c[0] + cx * r2) + ',' + f(c[1] + cy * r2);
+    }
+    return { blocks, land, ring1: ring(14), ring2: ring(34), burst };
+  }
+}
+</script>
+</body>
+</html>

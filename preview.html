@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cloud Stacker — visual reference preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
+<style>
+  /* Reference preview: plain CSS so it runs offline. The handoff spec has the Tailwind versions. */
+  html, body { margin: 0; height: 100%; background: #02060F; overflow: hidden; }
+  body { font-family: 'Archivo', ui-sans-serif, system-ui, sans-serif; color: #F4F8FF; -webkit-tap-highlight-color: transparent; user-select: none; }
+  canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+  .mono { font-family: 'Martian Mono', ui-monospace, monospace; }
+  .hidden { display: none !important; }
+
+  #hud { position: fixed; top: 20px; right: 22px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; pointer-events: none; }
+  #hud .label { font-size: 10px; font-weight: 500; letter-spacing: .32em; color: #7F93B5; }
+  #hud .value { font-size: clamp(40px, 4.4vw, 64px); font-weight: 600; font-stretch: 87.5%; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; transition: color .3s, text-shadow .3s; }
+  #hud .value.bump { color: #5BE3FF; text-shadow: 0 0 18px rgba(91,227,255,.6); transition: none; }
+  #mark { position: fixed; z-index: 5; top: 26px; left: 22px; display: flex; align-items: center; gap: 10px; pointer-events: none; }
+  #mark span { font-size: 11px; font-weight: 600; letter-spacing: .24em; color: #DCE8FA; }
+  #hint { position: fixed; left: 0; right: 0; bottom: 34px; display: flex; align-items: center; justify-content: center; gap: 12px; pointer-events: none; transition: opacity .4s; }
+  #hint span { font-size: 10px; font-weight: 500; letter-spacing: .28em; color: #A9BDDB; }
+  .tapdot { position: relative; width: 22px; height: 22px; }
+  .tapdot::before { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid #5BE3FF; animation: tap 1.6s ease-out infinite; }
+  .tapdot::after { content: ''; position: absolute; left: 7px; top: 7px; width: 8px; height: 8px; border-radius: 50%; background: #5BE3FF; }
+  @keyframes tap { 0% { transform: scale(.6); opacity: .9 } 100% { transform: scale(1.5); opacity: 0 } }
+
+  /* Screen A — title overlay */
+  #title { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
+  #title .fog { position: absolute; left: 0; right: 0; bottom: 0; height: 52%; background: linear-gradient(to bottom, rgba(2,6,15,0) 0%, rgba(2,6,15,.82) 38%, #02060F 70%); }
+  #title .content { position: relative; padding: 0 24px 32px; display: flex; flex-direction: column; gap: 26px; width: 100%; max-width: 420px; margin: 0 auto; box-sizing: border-box; pointer-events: auto; }
+  #title h1 { margin: 0; font-size: 44px; line-height: .95; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; }
+  #title h1 em { font-style: normal; color: #5BE3FF; }
+  #title p { margin: 14px 0 0; font-size: 15px; line-height: 1.45; color: #A9BDDB; max-width: 310px; }
+  /* Wide screens: copy sits left, the tower is pushed right (see TITLE_SHIFT in the script). */
+  @media (min-width: 900px) {
+    #title { justify-content: center; }
+    #title .fog { top: 0; height: auto; width: 60%; background: linear-gradient(to right, #02060F 0%, rgba(2,6,15,.85) 45%, rgba(2,6,15,0) 100%); }
+    #title .content { margin: 0 0 0 8vw; padding: 0; max-width: 460px; gap: 32px; }
+    #title h1 { font-size: 68px; }
+    #title p { font-size: 17px; max-width: 380px; }
+    .btn { max-width: 340px; }
+  }
+  .btn { height: 60px; border: 0; border-radius: 14px; background: #0070C9; color: #fff; font: 700 15px/1 'Archivo', sans-serif; font-stretch: 115%; letter-spacing: .18em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; width: 100%; }
+  .btn:hover { background: #0A7BDA; }
+  .pulse { animation: pulse 1.8s ease-out infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,120,212,.6), 0 12px 32px rgba(0,112,201,.45) } 100% { box-shadow: 0 0 0 18px rgba(0,120,212,0), 0 12px 32px rgba(0,112,201,.45) } }
+
+  /* Screen C — game over modal */
+  #over { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(2,6,15,.6); backdrop-filter: blur(7px) saturate(.8); -webkit-backdrop-filter: blur(7px) saturate(.8); }
+  #over .card { width: 100%; max-width: 380px; box-sizing: border-box; padding: 28px 24px 24px; border-radius: 22px; background: #061430; border: 1px solid rgba(110,170,255,.22); box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; gap: 22px; animation: rise .5s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes rise { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+  .eyebrow { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 600; letter-spacing: .34em; color: #FFB23F; }
+  #over h2 { margin: 10px 0 0; font-size: 36px; line-height: 1; font-weight: 800; font-stretch: 115%; letter-spacing: -0.02em; }
+  .scorebox { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 18px 18px 16px; border-radius: 14px; background: #0A1D42; }
+  .scorebox .label { font-size: 10px; font-weight: 500; letter-spacing: .3em; color: #8DA2C4; }
+  .scorebox .final { font-size: 54px; font-weight: 600; font-stretch: 87.5%; line-height: .95; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin-top: 6px; }
+  .stats { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding-bottom: 4px; font-size: 13px; color: #A9BDDB; }
+  .stats b { color: #F4F8FF; } .stats b.c { color: #5BE3FF; }
+  #over label { font-size: 14px; font-weight: 600; color: #DCE8FA; display: block; margin-bottom: 12px; }
+  #initials { width: 100%; height: 76px; box-sizing: border-box; border-radius: 12px; background: #0B2350; border: 1.5px solid #3AA0FF; box-shadow: 0 0 0 4px rgba(0,120,212,.28); color: #fff; text-align: center; font: 600 38px 'Martian Mono', monospace; letter-spacing: .5em; padding-left: .5em; text-transform: uppercase; outline: none; }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="mark" class="mono">
+  <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L20 7.5 L11 12 L2 7.5 Z" fill="#5BE3FF"/><path d="M2 11 L11 15.5 L20 11" stroke="#2E9BFF" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M2 14.5 L11 19 L20 14.5" stroke="#1C5FB8" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg>
+  <span>CLOUD STACKER</span>
+</div>
+
+<div id="hud" class="mono hidden"><span class="label">SCORE</span><span class="value" id="score">0</span></div>
+<div id="hint" class="mono hidden"><div class="tapdot"></div><span>TAP ANYWHERE TO DROP</span></div>
+
+<section id="title">
+  <div class="fog"></div>
+  <div class="content">
+    <div>
+      <h1>Build your<br>cloud <em>stack.</em></h1>
+      <p>Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.</p>
+    </div>
+    <button class="btn pulse" id="start" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8.5" opacity=".5"/></svg>
+      Tap to start
+    </button>
+  </div>
+</section>
+
+<section id="over" class="hidden">
+  <div class="card">
+    <div>
+      <div class="eyebrow mono"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFB23F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5h8"/><path d="M3 9.5h6"/><path d="M10.5 3.5l3.5 4.5-2.5 1.5"/></svg>GAME OVER</div>
+      <h2>Stack crashed!</h2>
+    </div>
+    <div class="scorebox">
+      <div><div class="label mono">FINAL SCORE</div><div class="final mono" id="final">0</div></div>
+      <div class="stats"><span><b id="floors">0</b> floors</span><span><b class="c" id="perfects">0</b> perfect</span></div>
+    </div>
+    <div>
+      <label for="initials">Your initials for the leaderboard</label>
+      <input id="initials" maxlength="3" autocapitalize="characters" autocomplete="off" spellcheck="false">
+    </div>
+    <button class="btn" id="save" type="button">Save score</button>
+  </div>
+</section>
+
+<script src="stack-renderer.js"></script>
+<script>
+(() => {
+  const R = StackRenderer;
+  const { GEOM } = R;
+  const LABELS = ['Compute', 'Storage', 'Entra', 'Defender', 'SharePoint', 'Copilot', 'Intune', 'Fabric', 'Teams', 'Azure SQL', 'Sentinel', 'Purview', 'Azure AI'];
+  const TOLERANCE = 3;     // world units counted as a perfect landing
+  const SPAWN_DELAY = 0.3; // seconds between a landing and the next block appearing (lets the FX read)
+  const slideRange = () => (W < 600 ? 110 : 150); // how far either side of the stack the block travels
+  const TITLE_SHIFT = () => (W >= 900 ? W * 0.16 : 0); // wide screens: tower sits right of the title copy
+
+  const cv = document.getElementById('game');
+  const ctx = cv.getContext('2d');
+  const $ = (id) => document.getElementById(id);
+
+  let W, H, dpr, k, view, backdrop, grain, floor, motes;
+  let mode = 'title';
+  let stack, active, dir, speed, score, perfects, labelIdx;
+  let fx = [];           // timed effects
+  let shards = [];
+  let shakeT0 = -1;
+  let now = 0;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    k = R.scaleFor(W, H);
+    backdrop = R.buildBackdrop(W, H, k, dpr);
+    floor = R.buildFloor(k, dpr);
+    motes = R.makeMotes(W, H);
+    const ox = R.centredOriginX(W, k);
+    if (!view) view = R.makeView(ox, H * 0.5, k); else { view.ox = ox; view.k = k; }
+  }
+
+  const base = () => ({ x0: 0, w: GEOM.baseW, y0: 0, h: GEOM.baseH, label: 'On-prem', kind: 'base' });
+  const top = () => stack[stack.length - 1];
+
+  function attractStack() {
+    const rows = [[0, 170], [0, 170], [6, 164], [6, 164], [10, 160], [10, 160], [10, 152], [14, 148]];
+    stack = [base()];
+    rows.forEach(([x0, w], i) => stack.push({ x0, w, y0: GEOM.baseH + i * GEOM.blockH, h: GEOM.blockH, label: LABELS[i] }));
+    labelIdx = rows.length;
+    spawn();
+  }
+
+  function spawn(delay = 0) {
+    const t = top();
+    const fromLeft = stack.length % 2 === 0;
+    dir = fromLeft ? 1 : -1;
+    active = {
+      x0: t.x0 + (fromLeft ? -slideRange() : slideRange()),
+      w: t.w,
+      y0: t.y0 + t.h + GEOM.hover,
+      h: GEOM.blockH,
+      label: LABELS[labelIdx++ % LABELS.length],
+      readyAt: now + delay,
+    };
+  }
+  const activeReady = () => active && now >= active.readyAt;
+
+  function startGame() {
+    mode = 'play';
+    stack = [base()];
+    score = 0; perfects = 0; labelIdx = 0; speed = 120;
+    fx = []; shards = [];
+    spawn();
+    $('title').classList.add('hidden');
+    $('over').classList.add('hidden');
+    $('hud').classList.remove('hidden');
+    $('hint').classList.remove('hidden');
+    $('hint').style.opacity = 1;
+    setScore(0);
+  }
+
+  function setScore(v, bump) {
+    score = v;
+    const el = $('score');
+    el.textContent = v.toLocaleString('en-US');
+    if (bump) { el.classList.add('bump'); setTimeout(() => el.classList.remove('bump'), 120); }
+  }
+
+  function drop() {
+    const t = top();
+    const a = active;
+    const a0 = a.x0, a1 = a.x0 + a.w, t0 = t.x0, t1 = t.x0 + t.w;
+    const o0 = Math.max(a0, t0), o1 = Math.min(a1, t1);
+    const landY = t.y0 + t.h;
+
+    if (o1 - o0 <= 0) {                                    // complete miss → game over
+      shards.push({ x0: a.x0, w: a.w, y0: landY, h: a.h, side: a0 > t0 ? 'right' : 'left', t0: now });
+      active = null;
+      mode = 'over';
+      $('hint').classList.add('hidden');
+      setTimeout(showGameOver, 750);
+      return;
+    }
+
+    let placed;
+    if (Math.abs(a0 - t0) <= TOLERANCE) {                  // perfect
+      placed = { x0: t0, w: t.w, y0: landY, h: a.h, label: a.label, flashT0: now };
+      perfects++;
+      setScore(score + 500, true);
+      fx.push({ type: 'rings', t0: now, dur: 0.6, block: placed });
+      fx.push({ type: 'popup', t0: now, dur: 0.9, kind: 'perfect', block: placed });
+      shakeT0 = now;
+    } else {                                               // sliced
+      const overRight = a1 > t1;
+      placed = { x0: o0, w: o1 - o0, y0: landY, h: a.h, label: a.label, cutT0: overRight ? now : -1 };
+      shards.push(overRight
+        ? { x0: o1, w: a1 - o1, y0: landY, h: a.h, side: 'right', t0: now }
+        : { x0: a0, w: o0 - a0, y0: landY, h: a.h, side: 'left', t0: now });
+      setScore(score + 100);
+      fx.push({ type: 'cut', t0: now, dur: 0.25, x: overRight ? o1 : o0, y0: landY, h: a.h });
+      fx.push({ type: 'popup', t0: now, dur: 0.9, kind: 'slice', block: placed });
+    }
+    stack.push(placed);
+    speed = Math.min(speed * 1.04, 340);
+    if (stack.length > 4) $('hint').style.opacity = 0;
+    spawn(SPAWN_DELAY);
+  }
+
+  function showGameOver() {
+    $('final').textContent = score.toLocaleString('en-US');
+    $('floors').textContent = stack.length - 1;
+    $('perfects').textContent = perfects;
+    $('hud').classList.add('hidden');
+    $('over').classList.remove('hidden');
+    $('initials').value = '';
+    setTimeout(() => $('initials').focus(), 50);
+  }
+
+  function update(dt) {
+    if (activeReady()) {
+      const speedNow = mode === 'title' ? 90 : speed;
+      const range = slideRange();
+      active.x0 += dir * speedNow * dt;
+      const t = top();
+      if (active.x0 > t.x0 + range) { active.x0 = t.x0 + range; dir = -1; }
+      if (active.x0 < t.x0 - range) { active.x0 = t.x0 - range; dir = 1; }
+    }
+    // Camera: ease so the stack top sits at a fixed screen height.
+    const t = top();
+    const anchor = mode === 'title' ? (W >= 900 ? 0.3 : 0.24) : 0.46;
+    const targetOy = H * anchor + (t.y0 + t.h - t.x0 * 0.5) * k;
+    const targetOx = R.centredOriginX(W, k) + (mode === 'title' ? TITLE_SHIFT() : 0);
+    const ease = Math.min(1, dt * 5);
+    view.oy += (targetOy - view.oy) * ease;
+    view.ox += (targetOx - view.ox) * ease;
+  }
+
+  function render() {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.drawImage(backdrop, 0, 0, W, H);
+
+    const t = top();
+    const ts = view.p(t.x0 + t.w / 2, GEOM.depth / 2, t.y0 + t.h);
+    R.drawAtmosphere(ctx, W, H, k, now, ts[0], ts[1]);
+
+    ctx.save();
+    if (shakeT0 >= 0) {
+      const [sx, sy] = R.shakeOffset((now - shakeT0) / 0.3, k);
+      ctx.translate(sx, sy);
+    }
+
+    if (view.oy + 160 * k > 0 && view.oy - 200 * k < H) R.drawFloor(ctx, floor, view);
+
+    const topIdx = stack.length - 1;
+    stack.forEach((b, i) => {
+      const yScreen = view.p(b.x0, 0, b.y0)[1];
+      if (yScreen - 120 * k > H) return;               // below the fold
+      if (b.kind === 'base') { R.drawBlock(ctx, view, b, { kind: 'base' }); return; }
+      const flashAge = b.flashT0 != null ? now - b.flashT0 : 99;
+      const flash = flashAge < 0.12 ? 1 : Math.max(0, 1 - (flashAge - 0.12) / 0.25);
+      const cutAge = b.cutT0 >= 0 ? now - b.cutT0 : 99;
+      const cut = Math.max(0, 1 - cutAge / 0.45) * 0.9;
+      R.drawBlock(ctx, view, b, { kind: 'cloud', t: 1 - (topIdx - i) / 12, flash, cut });
+    });
+
+    if (activeReady()) {
+      if (mode === 'play') {
+        R.drawDropGuide(ctx, view, t, active);
+        R.drawTrail(ctx, view, active, dir);
+      }
+      R.drawBlock(ctx, view, active, { kind: 'active' });
+    }
+
+    fx.forEach((e) => {
+      const p = (now - e.t0) / e.dur;
+      if (e.type === 'rings') R.drawPerfectRings(ctx, view, e.block, p);
+      if (e.type === 'cut') R.drawCutLine(ctx, view, e.x, e.y0, e.h, p);
+    });
+    shards = shards.filter((s) => R.drawShard(ctx, view, s, now - s.t0));
+    ctx.restore();
+
+    R.drawMotes(ctx, motes, now, k);
+    R.drawFog(ctx, W, H, k);
+
+    fx.forEach((e) => {
+      if (e.type !== 'popup') return;
+      const b = e.block;
+      const p = view.p(b.x0 + b.w / 2, GEOM.depth / 2, b.y0 + b.h);
+      const x = e.kind === 'slice' ? Math.min(p[0] + 70 * k, W - 60 * k) : p[0];
+      R.drawPopup(ctx, x, p[1] - 70 * k, e.kind, (now - e.t0) / e.dur, k);
+    });
+    fx = fx.filter((e) => now - e.t0 < e.dur);
+
+    R.drawGrain(ctx, grain, W, H);
+  }
+
+  let last = performance.now();
+  function frame(ts) {
+    const dt = Math.min(0.05, (ts - last) / 1000);
+    last = ts;
+    now += dt;
+    update(dt);
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // Input: tap anywhere drops (screen B only).
+  window.addEventListener('pointerdown', (e) => {
+    if (mode !== 'play' || !activeReady()) return;
+    if (e.target.closest('button, input')) return;
+    drop();
+  });
+  $('start').addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
+  $('initials').addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, ''); });
+  $('save').addEventListener('click', () => {
+    // Your game: save { score, initials, sessionId } to Supabase/Firebase, then show screen D (raffle).
+    $('over').classList.add('hidden');
+    $('title').classList.remove('hidden');
+    mode = 'title';
+    attractStack();
+  });
+
+  // Test hook (used to capture reference screenshots).
+  window.__cs = { startGame, drop, get state() { return { mode, stack, active, score }; }, setActiveX(x) { if (active) active.x0 = x; }, step(dt) { now += dt; update(dt); render(); } };
+
+  window.addEventListener('resize', resize);
+  grain = R.buildGrain();
+  resize();
+  attractStack();
+  const go = () => requestAnimationFrame(frame);
+  (document.fonts ? Promise.all([document.fonts.load("500 8px 'Martian Mono'"), document.fonts.load("800 46px 'Archivo'")]).catch(() => {}) : Promise.resolve()).then(go, go);
+})();
+</script>
+</body>
+</html>
