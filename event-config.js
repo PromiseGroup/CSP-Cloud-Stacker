@@ -14,7 +14,7 @@ window.THEME = (() => {
     headline: 'Build your<br>cloud <em>stack.</em>',
     subhead: 'Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.',
     gameOverTitle: 'Stack crashed!',
-    brandLogoSrc: 'assets/brand/promise-group.svg',   // company logo, top-left, ALWAYS shown (event or not)
+    brandLogoSrc: 'assets/promisegroup_logo_white_nobounds.png',   // company logo already in the game, top-left, ALWAYS shown
     wall: 'STILL NOT ON-PREM × SCALE IT × ',
   };
 
@@ -29,7 +29,7 @@ window.THEME = (() => {
     gameOverTitle: 'Go-live failed!',
     wall: 'STILL ON NAV × UPGRADE IT × ',
     kicker: 'PARIS · 27–29 OCT 2026',
-    logoSrc: 'assets/event/directions-emea-2026.svg',   // drop the real logo here (white/mono, ~160×40)
+    logoSrc: 'assets/event/emealogo.WebP',
   };
 
   const q = /[?&]event=(\d)/.exec(location.search);
