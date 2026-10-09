@@ -125,7 +125,16 @@
     .mascot { position: fixed; z-index: 35; pointer-events: none; animation: bob 3.2s ease-in-out infinite; }
     .mascot svg, .mascot img { display: none; width: 100%; height: auto; }
     .mascot[data-pose="idle"] .pose-idle,
-    .mascot[data-pose="impressed"] .pose-impressed { display: block; }
+    .mascot[data-pose="impressed"] .pose-impressed,
+    .mascot[data-pose="ouch"] .pose-ouch,
+    .mascot[data-pose="miss"] .pose-miss { display: block; }
+    .mascot[data-pose="ouch"] svg, .mascot[data-pose="ouch"] img,
+    .mascot[data-pose="miss"] svg, .mascot[data-pose="miss"] img { animation: wince .32s ease-in-out 2; }
+    @keyframes wince {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px) rotate(-3deg); }
+      75% { transform: translateX(3px) rotate(3deg); }
+    }
     #mascot.corner { left: 18px; bottom: 66px; width: 60px; }
     #mascot.title { width: 80px; }
     @media (min-width: 900px) {
@@ -173,7 +182,7 @@
     <img src="assets/promisegroup_logo_white_nobounds.png" alt="Promise Group" class="h-9 w-auto">
   </div>
 
-  <div id="mascot" class="mascot title" data-pose="idle" aria-hidden="true"><svg class="pose-idle" width="80" height="96" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), idle pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"/><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"/><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"/><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/><circle cx="57" cy="57" r="2" fill="#7CF5FF"/><circle cx="57" cy="65" r="2" fill="#FFB23F"/><path d="M26 33 H35 M44 33 H53" stroke="#0A0D14" stroke-width="2.6" stroke-linecap="round"/><circle cx="33" cy="36.5" r="2" fill="#0A0D14"/><circle cx="51" cy="36.5" r="2" fill="#0A0D14"/><path d="M37 43 H44" stroke="#0A0D14" stroke-width="2" stroke-linecap="round"/></svg><svg class="pose-impressed" width="80" height="96" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), impressed pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"/><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"/><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"/><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/><circle cx="57" cy="57" r="2" fill="#7CF5FF"/><circle cx="57" cy="65" r="2" fill="#FFB23F"/><circle cx="31" cy="34" r="4.2" fill="none" stroke="#0A0D14" stroke-width="2"/><circle cx="49" cy="34" r="4.2" fill="none" stroke="#0A0D14" stroke-width="2"/><circle cx="31" cy="34" r="1.6" fill="#0A0D14"/><circle cx="49" cy="34" r="1.6" fill="#0A0D14"/><circle cx="40" cy="43" r="2.2" fill="none" stroke="#0A0D14" stroke-width="1.8"/><path d="M4 20 L10 26 M10 20 L4 26" stroke="#FF3EA5" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+  <div id="mascot" class="mascot title" data-pose="idle" aria-hidden="true"><svg class="pose-idle" width="80" height="96" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), idle pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"/><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"/><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"/><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/><circle cx="57" cy="57" r="2" fill="#7CF5FF"/><circle cx="57" cy="65" r="2" fill="#FFB23F"/><path d="M26 33 H35 M44 33 H53" stroke="#0A0D14" stroke-width="2.6" stroke-linecap="round"/><circle cx="33" cy="36.5" r="2" fill="#0A0D14"/><circle cx="51" cy="36.5" r="2" fill="#0A0D14"/><path d="M37 43 H44" stroke="#0A0D14" stroke-width="2" stroke-linecap="round"/></svg><svg class="pose-impressed" width="80" height="96" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), impressed pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"/><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"/><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"/><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/><circle cx="57" cy="57" r="2" fill="#7CF5FF"/><circle cx="57" cy="65" r="2" fill="#FFB23F"/><circle cx="31" cy="34" r="4.2" fill="none" stroke="#0A0D14" stroke-width="2"/><circle cx="49" cy="34" r="4.2" fill="none" stroke="#0A0D14" stroke-width="2"/><circle cx="31" cy="34" r="1.6" fill="#0A0D14"/><circle cx="49" cy="34" r="1.6" fill="#0A0D14"/><circle cx="40" cy="43" r="2.2" fill="none" stroke="#0A0D14" stroke-width="1.8"/><path d="M4 20 L10 26 M10 20 L4 26" stroke="#FF3EA5" stroke-width="2.4" stroke-linecap="round"/></svg><svg class="pose-ouch" width="80" height="96" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), ouch pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"/><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"/><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"/><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/><circle cx="57" cy="57" r="2" fill="#7CF5FF"/><circle cx="57" cy="65" r="2" fill="#FFB23F"/><path d="M27 29 L35 34 L27 39 M53 29 L45 34 L53 39" stroke="#0A0D14" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M32 44 L34.5 42 L37 44 L39.5 42 L42 44 L44.5 42 L47 44" stroke="#0A0D14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M72 22 Q77 30 72 34 Q67 30 72 22 Z" fill="#7CF5FF"/><path d="M3 22 L10 25 M2 30 L9 30 M3 38 L10 35" stroke="#FF3EA5" stroke-width="2.2" stroke-linecap="round"/></svg><svg class="pose-miss" width="80" height="96" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), miss pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"/><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"/><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"/><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"/><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/><circle cx="57" cy="57" r="2" fill="#7CF5FF"/><circle cx="57" cy="65" r="2" fill="#FFB23F"/><circle cx="31" cy="33" r="5.4" fill="none" stroke="#0A0D14" stroke-width="2"/><circle cx="49" cy="33" r="5.4" fill="none" stroke="#0A0D14" stroke-width="2"/><circle cx="31" cy="35.6" r="1.7" fill="#0A0D14"/><circle cx="49" cy="35.6" r="1.7" fill="#0A0D14"/><ellipse cx="40" cy="44" rx="3.6" ry="3" fill="#0A0D14"/><path d="M5 8 V19 M5 23 V24 M12 8 V19 M12 23 V24" stroke="#FF3EA5" stroke-width="2.6" stroke-linecap="round"/></svg></div>
 
   <div id="hud" class="is-hidden pointer-events-none">
     <div class="fixed top-5 right-[22px] flex flex-col items-end gap-1 font-['Martian_Mono']">
@@ -564,7 +573,7 @@
         };
         cutSprite = xSprites.chalk[0];
       });
-      [["idle", "mascot-idle.png"], ["impressed", "mascot-impressed.png"]].forEach(([pose, file]) => {
+      [["idle", "mascot-idle.png"], ["impressed", "mascot-impressed.png"], ["ouch", "mascot-ouch.png"], ["miss", "mascot-miss.png"]].forEach(([pose, file]) => {
         loadImage(base + file).then((img) => {
           if (!img) return;
           img.className = `pose-${pose}`;
@@ -694,6 +703,7 @@
         const cutX = cutRight ? placed.x0 + placed.w : placed.x0;
         fx.push({ type: "cut", t0: clock, dur: 0.25, x: cutX, y0: placed.y0, h: GEOM.blockH });
         fx.push({ type: "cutx", t0: clock, dur: 0.4, x: cutX, y0: placed.y0, h: GEOM.blockH });
+        setPose("ouch", 0.9);
         fx.push({ type: "popup", t0: clock, dur: 0.9, kind: "slice", block: placed });
       }
       hSpeed = Math.min(MAX_SPEED, hSpeed + 18);
@@ -746,7 +756,7 @@
           falling = null;
           spawnAt = -1;
           gameOverAt = clock + 0.75;
-          mascotMode("hidden");
+          setPose("miss");
           return;
         } else {
           falling.y = below.y - falling.h;
