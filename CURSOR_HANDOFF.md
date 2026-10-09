@@ -42,7 +42,7 @@ azure-btn    #0070C9   primary buttons (white text passes 4.5:1); hover #0A7BDA
 cyan         #5BE3FF   accent: "stack." in title, perfect, focus caret
 led          #7CF5FF
 ice          #E9FDFF   active block edge
-amber        #FFB23F   ONLY for slice / game-over signals
+amber        #FFB23F   ONLY for slice signals (never on the end-of-run card)
 amber-light  #FFE2A8
 text         #F4F8FF
 text-muted   #A9BDDB
@@ -149,7 +149,7 @@ view.ox += (targetOx - view.ox) * Math.min(1, dt * 5);
 |---|---|---|
 | **Perfect drop** | Landed block `flash`: 1 for 120 ms, then linear to 0 over 250 ms. `drawPerfectRings(block, p)` + `drawPerfectXs(view, block, p)`. Mascot → *impressed* 900 ms. `shakeOffset(p)` (6px × k, decaying). `drawPopup(…, 'perfect', p)` above the block. HUD score turns cyan for 120 ms. | rings 600 ms · shake 300 ms · popup 900 ms |
 | **Slice** | Kept block `cut`: 0.9 → 0 over 450 ms (amber right face; only when the overhang was on the +x side). `drawCutLine(x = cut position)` + `drawCutXs(…)` (400 ms). Push a shard `{x0, w, y0, h, side}` and draw it with `drawShard(shard, secondsSinceCut)` until it returns `false`. `drawPopup(…, 'slice', p)`, offset 70px × k to the right. Mascot → *ouch* 900 ms (2 quick 3px wiggles). | cut line 250 ms · shard ~1.1 s · popup 900 ms |
-| **Miss (game over)** | The whole active block becomes a shard (`side` = which way it missed). Stop input. Mascot → *miss* (stays until the card shows). After ~750 ms show Screen C; the corner mascot hides and the *crashed* peek appears on the card. | — |
+| **Miss (game over)** | The whole active block becomes a shard (`side` = which way it missed). Stop input. Mascot → *miss* (stays until the card shows). After ~750 ms show Screen C; the corner mascot hides and the friendly *peek* appears on the card. | — |
 | **Next block** | Spawn ~300 ms after a landing so the effects read. It isn't drawn and can't be dropped during that gap. | 300 ms |
 
 ## DOM screens (Tailwind)
@@ -217,11 +217,12 @@ The canvas stays frozen behind it. Blur it with the backdrop:
 <section id="screen-gameover" class="fixed inset-0 flex items-center justify-center p-5 bg-[rgba(2,6,15,.6)] backdrop-blur-[7px] backdrop-saturate-[.8]">
   <div class="w-full max-w-[380px] rounded-[22px] bg-[#061430] border border-[rgba(110,170,255,.22)] shadow-[0_30px_80px_rgba(0,0,0,.6)] px-6 pt-7 pb-6 flex flex-col gap-[22px]">
     <div>
-      <div class="flex items-center gap-2 font-['Martian_Mono'] text-[10px] font-semibold tracking-[.34em] text-[#FFB23F]">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFB23F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5h8"/><path d="M3 9.5h6"/><path d="M10.5 3.5l3.5 4.5-2.5 1.5"/></svg>
-        GAME OVER
+      <div class="flex items-center gap-2 font-['Martian_Mono'] text-[10px] font-semibold tracking-[.34em] text-[#5BE3FF]">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5BE3FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14V2"/><path d="M3 3h9l-2 3 2 3H3"/></svg>
+        RUN COMPLETE
       </div>
-      <h2 class="mt-2.5 font-['Mulish'] text-[36px] leading-none font-black tracking-[-0.02em] text-[#F4F8FF]">Stack crashed!</h2>
+      <h2 class="mt-2.5 font-['Mulish'] text-[36px] leading-none font-black tracking-[-0.02em] text-[#F4F8FF]">Nice start!</h2>
+      <p id="overSub" class="mt-2 font-['Mulish'] text-[14px] text-[#A9BDDB]">Every great stack starts somewhere.</p>
     </div>
     <div class="flex items-end justify-between gap-3 rounded-[14px] bg-[#0A1D42] px-[18px] pt-[18px] pb-4">
       <div>
@@ -283,7 +284,7 @@ chalk  #F2EEE6   ink  #0A0D14   pink  #FF3EA5
 | # | Element | Where / when | Asset file(s) (transparent PNG @2x) | Stand-in until then |
 |---|---|---|---|---|
 | 1 | **× marks** | Perfect: 9 marks burst on an iso ellipse around the landed block, alternating pink/chalk, scale in, then fade (600 ms). Slice: 3 chalk marks at the ends of the cut line (400 ms). | `x-1.png` … `x-4.png`, drawn **black on transparent**, ~128px. Tint once at load with `StackRenderer.tintSprite(img, ART.pink)` / `ART.chalk` and cache. | `drawPerfectXs()` / `drawCutXs()` draw procedural ×'s. Pass the tinted sprites as the optional last argument once they exist. |
-| 2 | **Mascot: the on-prem server** | A stubby little server box with a screen for a face (the legacy machine being migrated, deadpan about it). DOM `<img>` over the canvas, 3.2 s idle bob (±3px). **Title:** leaning against the on-prem base's right face. Position each frame from `view.p(GEOM.baseW, 40, 0)`: left = x + 6, top = y − height. Width 80px (104px at ≥900px wide). **Play:** bottom-left, `left:18px; bottom:66px; width:60px` (desktop `left:44px; bottom:84px; width:84px`). Swap to *impressed* for 900 ms on every perfect, *ouch* for 900 ms on every slice (+100), then back to *idle*. **Miss:** switch to *miss* and keep it in the corner until the game-over card appears (~750 ms), then hide the corner mascot. **Game over:** *crashed* pose peeks over the modal card's top-right edge (`position:absolute; right:26px; top:-74px; width:84px`), hands gripping the edge. | `mascot-idle.png`, `mascot-impressed.png`, `mascot-ouch.png`, `mascot-miss.png` (all ≈400×480, feet on the bottom edge; *ouch* = squinting `> <` eyes, gritted teeth, sweat drop, pink pain ticks; *miss* = wide eyes looking down, open mouth, pink `!!`), `mascot-crashed.png` (top of the server + hands only, × eyes on its screen, smoke from its cable, ≈420×410, hands on the bottom edge). | The placeholder SVGs in `preview.html` (`.pose-idle`, `.pose-impressed`, `.pose-ouch`, `.pose-miss`, `.peek`). |
+| 2 | **Mascot: the on-prem server** | A stubby little server box with a screen for a face (the legacy machine being migrated, deadpan about it). DOM `<img>` over the canvas, 3.2 s idle bob (±3px). **Title:** leaning against the on-prem base's right face. Position each frame from `view.p(GEOM.baseW, 40, 0)`: left = x + 6, top = y − height. Width 80px (104px at ≥900px wide). **Play:** bottom-left, `left:18px; bottom:66px; width:60px` (desktop `left:44px; bottom:84px; width:84px`). Swap to *impressed* for 900 ms on every perfect, *ouch* for 900 ms on every slice (+100), then back to *idle*. **Miss:** switch to *miss* and keep it in the corner until the game-over card appears (~750 ms), then hide the corner mascot. **End-of-run card:** a friendly *peek* pose (the impressed face) peeks over the modal card's top-right edge (`position:absolute; right:26px; top:-74px; width:84px`), hands gripping the edge. | `mascot-idle.png`, `mascot-impressed.png`, `mascot-ouch.png`, `mascot-miss.png` (all ≈400×480, feet on the bottom edge; *ouch* = squinting `> <` eyes, gritted teeth, sweat drop, pink pain ticks; *miss* = wide eyes looking down, open mouth, pink `!!`), `mascot-peek.png` (top of the server + hands only, wide ring eyes on its screen and the pink × spark, ≈420×410, hands on the bottom edge; no × eyes, no smoke). | The placeholder SVGs in `preview.html` (`.pose-idle`, `.pose-impressed`, `.pose-ouch`, `.pose-miss`, `.peek`). |
 | 3 | **Text wall** | Background of Screen C (between the blurred scene and the card) and Screen D (behind the content). Opacity 7.5% (C) / 6% (D), rotated −4°, full screen. Phrase: `STILL NOT ON-PREM × SCALE IT ×`. **Never** behind gameplay. | `wall.png`: a **seamless tileable** chalk-lettering texture, white on transparent, 1024×1024, used as a repeating `background-image`. | Repeated lines in Permanent Marker (Google Font, stand-in only). See `.wall` in `preview.html`. |
 
 Rules for the art layer:
@@ -307,12 +308,17 @@ const EVENT_ENABLED = true;   // false → the generic Microsoft-cloud game, not
 | Block names (bottom → top, then loops) | Finance, Sales, Purchasing, Inventory, Warehouse, Projects, Service, E-Documents, AppSource, Power BI, Copilot, AI Agents, Agentic ERP | Compute … Azure AI (original list) |
 | Base block | **On-prem NAV** (legacy Dynamics NAV, the box everyone is migrating off) | On-prem |
 | Headline / subhead | "Build your ERP *stack.*" / "Drop each module onto the one below, from Finance up to Agentic ERP. Land it clean for +500. Any overhang gets sliced off." | "Build your cloud *stack.*" / original |
-| Game-over title | "Go-live failed!" | "Stack crashed!" |
+| End-of-run headline | tiered by floors (see `endings` in `event-config.js`): Nice start! → Solid build! → Strong stack! → Go-live approved! | Nice start! → Solid build! → Strong stack! → Skyscraper! |
 | Text wall (art layer) | `STILL ON NAV × UPGRADE IT ×` | `STILL NOT ON-PREM × SCALE IT ×` |
 | Title kicker | Directions logo slot + `PARIS · 27–29 OCT 2026` above the headline (on phones: fixed under the wordmark) | removed |
-| Top-left brand mark | **Promise Group logo** (`assets/brand/promise-group.svg`), same in both modes, 30px high (24px under 900px so it can't reach the score). Not an event element: no `data-event`. The text `CLOUD STACKER` is only the fallback if the file is missing. | same |
+| Top-left brand mark | **Promise Group logo: already in the game, leave it exactly as it is.** Do not re-create, move, rename or re-point it, and do not add any `assets/brand/…` path. `brandLogoSrc` stays `null`. Not an event element: no `data-event`. | same |
 | Accent | Line-art Eiffel Tower, cyan, 20% opacity, **title screen only** (never behind gameplay or the modal) | removed |
 | Raffle (D365 form screen) | Logo slot above "Enter the prize raffle!" | none |
+
+**Logo rules (read before touching any logo):**
+1. The company logo already exists in the game. Find its current element (search the project for `Promise Group`, the alt text) and keep its markup and `src` byte-for-byte. If an earlier edit changed it, restore the original (`git diff` / `git checkout -p` on those lines).
+2. Never output an `<img>` whose `src` might not exist. For the Directions logo, preload with `new Image()` and insert it only in `onload`; until then the typographic stand-in stays. A broken-image icon or visible alt text on screen is a bug.
+3. The Directions logo file does not exist in the project yet. Until the owner adds `assets/event/directions-emea-2026.svg`, the stand-in text `DIRECTIONS EMEA` is the correct, intended result.
 
 **Logos:** the company logo is already in the game top-left (keep whatever file the project already uses and point `brandLogoSrc` in `event-config.js` at it). For the event, drop the Directions logo at `assets/event/directions-emea-2026.svg` (white or single-colour on transparent, ~160×40). The code loads it automatically and replaces the typographic stand-in. Don't redraw or approximate the logo.
 
@@ -324,8 +330,10 @@ Every event element carries `data-event`; when `THEME.isEvent` is false they are
 - [ ] Blocks are isometric: lit top, dark sides, neon edge on the two front top edges, white mono label on the long face, LED dots.
 - [ ] Colour climbs with height: lower blocks are deeper azure, the top blocks brightest cyan.
 - [ ] Perfect: white flash, two rings, short shake, "PERFECT / +500" pop-up, score turns cyan briefly.
+- [ ] No broken-image icon or alt text visible anywhere; the company logo is untouched.
 - [ ] Event mode on: ERP block names, "On-prem NAV" base, "Build your ERP stack.", Eiffel + kicker on the title only. `?event=0` returns the generic game with no event elements in the DOM.
 - [ ] Slice: amber cut line, amber cut face, shard tumbles away and fades, "SLICED / +100" pop-up in amber, mascot winces (*ouch*).
+- [ ] End-of-run card is never negative: eyebrow `RUN COMPLETE` (cyan, flag icon), headline + one-line sub picked from `THEME.endings` by floors stacked. The words "game over", "crashed", "failed" appear nowhere in the UI.
 - [ ] Miss: block falls away, mascot shows *miss* in the corner; modal appears ~750 ms later over a blurred, dimmed scene.
 - [ ] Title: tower visible above the copy on phone; on ≥900px wide the copy is left and the tower right.
 - [ ] Mulish + Martian Mono actually load (check the Network tab); all display/body/button text is Mulish; canvas labels and score use Martian Mono.

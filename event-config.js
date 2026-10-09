@@ -13,8 +13,17 @@ window.THEME = (() => {
     baseLabel: 'On-prem',
     headline: 'Build your<br>cloud <em>stack.</em>',
     subhead: 'Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.',
-    gameOverTitle: 'Stack crashed!',
-    brandLogoSrc: 'assets/promisegroup_logo_white_nobounds.png',   // company logo already in the game, top-left, ALWAYS shown
+    eyebrow: 'RUN COMPLETE',
+    // Pick the LAST entry whose min <= floors stacked. Never a negative message: the run only ends, it never "fails".
+    endings: [
+      { min: 0,  title: 'Nice start!',  sub: 'Every great stack starts somewhere.' },
+      { min: 5,  title: 'Solid build!', sub: 'Steady hands. Keep climbing.' },
+      { min: 10, title: 'Strong stack!', sub: 'That is a serious tower.' },
+      { min: 16, title: 'Skyscraper!',  sub: 'Cloud architect energy.' },
+    ],
+    // Company logo, top-left, ALWAYS shown. null = DON'T TOUCH the game's existing logo element (the default).
+    // Only set a path here if the project has no logo yet; it must be a file that really exists.
+    brandLogoSrc: null,
     wall: 'STILL NOT ON-PREM × SCALE IT × ',
   };
 
@@ -26,10 +35,15 @@ window.THEME = (() => {
     baseLabel: 'On-prem NAV',            // the legacy box everyone is migrating off
     headline: 'Build your<br>ERP <em>stack.</em>',
     subhead: 'Drop each module onto the one below, from Finance up to Agentic ERP. Land it clean for +500. Any overhang gets sliced off.',
-    gameOverTitle: 'Go-live failed!',
+    endings: [
+      { min: 0,  title: 'Nice start!',   sub: 'Every migration begins with step one.' },
+      { min: 5,  title: 'Solid build!',  sub: 'Clean modules, steady hands.' },
+      { min: 10, title: 'Strong stack!', sub: 'That ERP is looking production-ready.' },
+      { min: 16, title: 'Go-live approved!', sub: 'Flawless. The NAV box is retired.' },
+    ],
     wall: 'STILL ON NAV × UPGRADE IT × ',
     kicker: 'PARIS · 27–29 OCT 2026',
-    logoSrc: 'assets/event/emealogo.WebP',
+    logoSrc: 'assets/emealogo.WebP',
   };
 
   const q = /[?&]event=(\d)/.exec(location.search);
