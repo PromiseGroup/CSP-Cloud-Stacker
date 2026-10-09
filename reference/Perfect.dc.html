@@ -72,7 +72,7 @@ body{margin:0}
 <polygon points="{{land.right}}" fill="hsl(202,70%,60%)"></polygon>
 <polygon points="{{land.top}}" fill="#FFFFFF"></polygon>
 <polyline points="{{land.edge}}" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"></polyline>
-<text transform="{{land.tx}}" class="lbl-ink">COPILOT</text>
+<text transform="{{land.tx}}" class="lbl-ink">SALES</text>
 </svg>
 
 <svg class="layer" width="390" height="844" aria-hidden="true">
@@ -147,10 +147,10 @@ class Component extends DCLogic {
       };
     };
     const layers = [
-      ['COMPUTE', 0, 170], ['STORAGE', 0, 170], ['ENTRA', 0, 166], ['DEFENDER', 4, 162],
-      ['SHAREPOINT', 4, 162], ['COPILOT', 4, 156], ['INTUNE', 10, 150], ['FABRIC', 10, 150],
-      ['TEAMS', 10, 144], ['AZURE SQL', 16, 138], ['SENTINEL', 16, 138], ['PURVIEW', 20, 134],
-      ['COMPUTE', 20, 128]
+      ['FINANCE', 0, 170], ['SALES', 0, 170], ['PURCHASING', 0, 166], ['INVENTORY', 4, 162],
+      ['WAREHOUSE', 4, 162], ['PROJECTS', 4, 156], ['SERVICE', 10, 150], ['E-DOCUMENTS', 10, 150],
+      ['APPSOURCE', 10, 144], ['POWER BI', 16, 138], ['COPILOT', 16, 138], ['AI AGENTS', 20, 134],
+      ['AGENTIC ERP', 20, 128]
     ];
     const n = layers.length;
     const blocks = layers.map((L, i) => Object.assign({ label: L[0] }, box(L[1], L[2], i * H, H), tint(i / (n - 1))));

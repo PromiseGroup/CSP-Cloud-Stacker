@@ -52,6 +52,7 @@ body{margin:0}
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 10px">
+<div class="art" style="align-self: flex-start; padding: 3px 8px; font-family: 'Martian Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .2em; color: #5BE3FF">× EVENT LOGO SLOT · DIRECTIONS EMEA 2026</div>
 <h1 style="margin: 0; font-size: 36px; line-height: .98; font-weight: 900; letter-spacing: -0.035em; color: #F4F8FF">Enter the prize raffle!</h1>
 <p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A9BDDB">Leave your details for a chance to win <span style="color: #F4F8FF; font-weight: 600">[PRIZE]</span>.</p>
 </div>
@@ -104,7 +105,7 @@ body{margin:0}
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   renderVals() {
-    const phrase = 'STILL NOT ON-PREM \u00d7 SCALE IT \u00d7 ';
+    const phrase = 'STILL ON NAV \u00d7 UPGRADE IT \u00d7 ';
     const long = phrase.repeat(8);
     const wall = Array.from({ length: 26 }, (_, i) => long.slice((i * 7) % phrase.length));
     return { wall };

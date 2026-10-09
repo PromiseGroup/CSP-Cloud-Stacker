@@ -292,12 +292,39 @@ Rules for the art layer:
 - Art elements are `aria-hidden`, have `pointer-events: none`, and never block a tap.
 - Respect `prefers-reduced-motion`: no bob, × marks appear without scaling.
 
+## Event theme: Directions EMEA 2026 (Paris) — one switch
+
+The game is built for **Directions EMEA 2026, Paris, 27–29 Oct 2026** (Business Central / Dynamics 365 partner community). Everything event-specific lives in **`event-config.js`** and is controlled by one constant:
+
+```js
+const EVENT_ENABLED = true;   // false → the generic Microsoft-cloud game, nothing else to change
+```
+
+`preview.html?event=0` / `?event=1` previews either mode without editing the file. **Do not hard-code any copy, block name or event element anywhere else.** Read it all from `window.THEME` (copy it into the real game as a module/config file).
+
+| Item | Event mode | Generic mode |
+|---|---|---|
+| Block names (bottom → top, then loops) | Finance, Sales, Purchasing, Inventory, Warehouse, Projects, Service, E-Documents, AppSource, Power BI, Copilot, AI Agents, Agentic ERP | Compute … Azure AI (original list) |
+| Base block | **On-prem NAV** (legacy Dynamics NAV, the box everyone is migrating off) | On-prem |
+| Headline / subhead | "Build your ERP *stack.*" / "Drop each module onto the one below, from Finance up to Agentic ERP. Land it clean for +500. Any overhang gets sliced off." | "Build your cloud *stack.*" / original |
+| Game-over title | "Go-live failed!" | "Stack crashed!" |
+| Text wall (art layer) | `STILL ON NAV × UPGRADE IT ×` | `STILL NOT ON-PREM × SCALE IT ×` |
+| Title kicker | Directions logo slot + `PARIS · 27–29 OCT 2026` above the headline (on phones: fixed under the wordmark) | removed |
+| Top-left brand mark | **Promise Group logo** (`assets/brand/promise-group.svg`), same in both modes, 30px high (24px under 900px so it can't reach the score). Not an event element: no `data-event`. The text `CLOUD STACKER` is only the fallback if the file is missing. | same |
+| Accent | Line-art Eiffel Tower, cyan, 20% opacity, **title screen only** (never behind gameplay or the modal) | removed |
+| Raffle (D365 form screen) | Logo slot above "Enter the prize raffle!" | none |
+
+**Logos:** the company logo is already in the game top-left (keep whatever file the project already uses and point `brandLogoSrc` in `event-config.js` at it). For the event, drop the Directions logo at `assets/event/directions-emea-2026.svg` (white or single-colour on transparent, ~160×40). The code loads it automatically and replaces the typographic stand-in. Don't redraw or approximate the logo.
+
+Every event element carries `data-event`; when `THEME.isEvent` is false they are removed from the DOM. Block names are all-caps mono, so long ones fall through the label-fitting ladder to the short codes in `SHORT_LABELS` (e.g. PURCHASING→PURCH, AGENTIC ERP→AGENTIC); those entries were added to `stack-renderer.js`.
+
 ## Acceptance checklist
 
 - [ ] At 390×844 the play screen matches `screenshots/phone-2-play.png`: stack centred, top block ~46% down, score top-right, fog at the bottom.
 - [ ] Blocks are isometric: lit top, dark sides, neon edge on the two front top edges, white mono label on the long face, LED dots.
 - [ ] Colour climbs with height: lower blocks are deeper azure, the top blocks brightest cyan.
 - [ ] Perfect: white flash, two rings, short shake, "PERFECT / +500" pop-up, score turns cyan briefly.
+- [ ] Event mode on: ERP block names, "On-prem NAV" base, "Build your ERP stack.", Eiffel + kicker on the title only. `?event=0` returns the generic game with no event elements in the DOM.
 - [ ] Slice: amber cut line, amber cut face, shard tumbles away and fades, "SLICED / +100" pop-up in amber, mascot winces (*ouch*).
 - [ ] Miss: block falls away, mascot shows *miss* in the corner; modal appears ~750 ms later over a blurred, dimmed scene.
 - [ ] Title: tower visible above the copy on phone; on ≥900px wide the copy is left and the tower right.

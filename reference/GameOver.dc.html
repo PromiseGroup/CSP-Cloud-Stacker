@@ -76,7 +76,7 @@ body{margin:0}
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFB23F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5h8"></path><path d="M3 9.5h6"></path><path d="M10.5 3.5l3.5 4.5-2.5 1.5"></path></svg>
 <span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .34em; color: #FFB23F">GAME OVER</span>
 </div>
-<h2 style="margin: 0; font-size: 36px; line-height: 1; font-weight: 900; letter-spacing: -0.03em; color: #F4F8FF">Stack crashed!</h2>
+<h2 style="margin: 0; font-size: 36px; line-height: 1; font-weight: 900; letter-spacing: -0.03em; color: #F4F8FF">Go-live failed!</h2>
 </div>
 
 <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 18px 18px 16px; border-radius: 14px; background: #0A1D42">
@@ -144,7 +144,7 @@ class Component extends DCLogic {
     const miss = box(158, 90, n * H + 4, H);
     const mc = P(203, D / 2, n * H + 15);
     const missT = 'translate(58 150) rotate(38 ' + f(mc[0]) + ' ' + f(mc[1]) + ')';
-    const phrase = 'STILL NOT ON-PREM \u00d7 SCALE IT \u00d7 ';
+    const phrase = 'STILL ON NAV \u00d7 UPGRADE IT \u00d7 ';
     const long = phrase.repeat(8);
     const wall = Array.from({ length: 26 }, (_, i) => long.slice((i * 7) % phrase.length));
     return { blocks, miss, missT, wall };

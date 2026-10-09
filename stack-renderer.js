@@ -114,7 +114,10 @@
     'SHAREPOINT': 'SPO', 'DEFENDER': 'DEF', 'SENTINEL': 'SNTL', 'AZURE SQL': 'SQL',
     'AZURE AI': 'AI', 'COPILOT': 'CPLT', 'PURVIEW': 'PRVW', 'STORAGE': 'STOR',
     'COMPUTE': 'CMPT', 'INTUNE': 'INTN', 'FABRIC': 'FBRC', 'ENTRA': 'ENTRA', 'TEAMS': 'TEAMS',
-    'ON-PREM': 'ON-PREM',
+    'ON-PREM': 'ON-PREM', 'ON-PREM NAV': 'NAV',
+    // Directions EMEA / Business Central set
+    'PURCHASING': 'PURCH', 'INVENTORY': 'INV', 'WAREHOUSE': 'WMS', 'PROJECTS': 'PROJ', 'SERVICE': 'SVC',
+    'E-DOCUMENTS': 'E-DOC', 'APPSOURCE': 'APPSRC', 'POWER BI': 'PBI', 'AI AGENTS': 'AGENTS', 'AGENTIC ERP': 'AGENTIC',
   };
 
   /** Returns { text, size, spacing } that fits the block's label face, or null to hide it. */

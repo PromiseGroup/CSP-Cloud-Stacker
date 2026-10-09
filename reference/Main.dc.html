@@ -72,7 +72,7 @@ body{margin:0}
 <polygon points="{{base.top}}" fill="url(#t-sheen)"></polygon>
 <polyline points="{{base.edge}}" fill="none" stroke="#6B7891" stroke-width="1" stroke-linejoin="round"></polyline>
 <path d="{{vents}}" stroke="#0B0F17" stroke-width="2" stroke-linecap="round" fill="none"></path>
-<text transform="{{base.tx}}" class="lbl-dim">ON-PREM</text>
+<text transform="{{base.tx}}" class="lbl-dim">ON-PREM NAV</text>
 <circle cx="{{base.d1x}}" cy="{{base.d1y}}" r="1.6" fill="#FFB23F"></circle>
 </svg>
 
@@ -118,13 +118,23 @@ body{margin:0}
 
 <div style="position: absolute; left: 24px; top: 26px; display: flex; align-items: center; gap: 10px">
 <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L20 7.5 L11 12 L2 7.5 Z" fill="#5BE3FF"></path><path d="M2 11 L11 15.5 L20 11" stroke="#2E9BFF" stroke-width="1.6" fill="none" stroke-linejoin="round"></path><path d="M2 14.5 L11 19 L20 14.5" stroke="#1C5FB8" stroke-width="1.6" fill="none" stroke-linejoin="round"></path></svg>
-<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .24em; color: #DCE8FA">CLOUD STACKER</span>
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .24em; color: #DCE8FA">× COMPANY LOGO SLOT</span>
 </div>
+
+<div style="position: absolute; left: 24px; top: 64px; display: flex; align-items: center; gap: 12px">
+<span class="art-tag" style="position: absolute; top: -14px; left: 0">× EVENT LOGO SLOT (STAND-IN)</span>
+<div class="art" style="display: flex; flex-direction: column; line-height: 1; padding: 4px 6px"><span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700; letter-spacing: .02em; color: #F4F8FF">DIRECTIONS <span style="color: #5BE3FF">EMEA</span></span></div>
+<div style="width: 1px; height: 22px; background: rgba(120,170,255,.28)"></div>
+<span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .2em; color: #8DA2C4; white-space: nowrap">PARIS · 27–29 OCT 2026</span>
+</div>
+
+<svg width="62" height="150" viewBox="0 0 60 140" fill="none" stroke="#5BE3FF" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; top: 104px; opacity: .2"><path d="M4 140 C14 100 20 70 27 30 L30 6 L33 30 C40 70 46 100 56 140"></path><path d="M16 140 C20 118 40 118 44 140"></path><path d="M13 108 H47 M20 70 H40 M25 42 H35 M30 6 V0"></path><path d="M13 108 L40 70 M47 108 L20 70 M20 70 L35 42 M40 70 L25 42"></path></svg>
+<span class="art-tag" style="position: absolute; right: 12px; top: 258px">× EVENT ACCENT · EIFFEL</span>
 
 <div style="position: absolute; left: 24px; right: 24px; bottom: 32px; display: flex; flex-direction: column; gap: 26px">
 <div style="display: flex; flex-direction: column; gap: 14px">
-<h1 style="margin: 0; font-size: 44px; line-height: .95; font-weight: 900; letter-spacing: -0.035em; color: #F4F8FF">Build your<br>cloud <span style="color: #5BE3FF">stack.</span></h1>
-<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A9BDDB; max-width: 310px; text-wrap: pretty">Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.</p>
+<h1 style="margin: 0; font-size: 44px; line-height: .95; font-weight: 900; letter-spacing: -0.035em; color: #F4F8FF">Build your<br>ERP <span style="color: #5BE3FF">stack.</span></h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #A9BDDB; max-width: 310px; text-wrap: pretty">Drop each module onto the one below, from Finance up to Agentic ERP. Land it clean for +500. Any overhang gets sliced off.</p>
 </div>
 <button type="button" class="pulse" style="height: 60px; border: 0; border-radius: 14px; background: #0070C9; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><circle cx="12" cy="12" r="8.5" opacity=".5"></circle></svg>
@@ -174,8 +184,8 @@ class Component extends DCLogic {
     };
     const BASE_H = 50;
     const layers = [
-      ['COMPUTE', 0, 170], ['STORAGE', 0, 170], ['ENTRA', 6, 164], ['DEFENDER', 6, 164],
-      ['SHAREPOINT', 10, 160], ['COPILOT', 10, 160], ['INTUNE', 10, 152], ['FABRIC', 14, 148]
+      ['FINANCE', 0, 170], ['SALES', 0, 170], ['PURCHASING', 6, 164], ['INVENTORY', 6, 164],
+      ['WAREHOUSE', 10, 160], ['PROJECTS', 10, 160], ['SERVICE', 10, 152], ['E-DOCUMENTS', 14, 148]
     ];
     const blocks = layers.map((L, i) => Object.assign({ label: L[0] }, box(L[1], L[2], BASE_H + i * H, H), tint(i / (layers.length - 1))));
     const base = box(0, 170, 0, BASE_H);

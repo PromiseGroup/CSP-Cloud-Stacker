@@ -71,7 +71,7 @@ body{margin:0}
 <polygon points="{{kept.top}}" fill="hsl(192,96%,66%)"></polygon>
 <polygon points="{{kept.top}}" fill="url(#s-sheen)"></polygon>
 <polyline class="neon" points="{{kept.edgeL}}" fill="none" stroke="#DDFBFF" stroke-width="1.3" stroke-linejoin="round"></polyline>
-<text transform="{{kept.tx}}" class="lbl">COPILOT</text>
+<text transform="{{kept.tx}}" class="lbl">SALES</text>
 <circle cx="{{kept.d1x}}" cy="{{kept.d1y}}" r="1.4" fill="#E9FDFF"></circle>
 </svg>
 
@@ -160,10 +160,10 @@ class Component extends DCLogic {
       };
     };
     const layers = [
-      ['COMPUTE', 0, 170], ['STORAGE', 0, 170], ['ENTRA', 0, 166], ['DEFENDER', 4, 162],
-      ['SHAREPOINT', 4, 162], ['COPILOT', 4, 156], ['INTUNE', 10, 150], ['FABRIC', 10, 150],
-      ['TEAMS', 10, 144], ['AZURE SQL', 16, 138], ['SENTINEL', 16, 138], ['PURVIEW', 20, 134],
-      ['COMPUTE', 20, 128]
+      ['FINANCE', 0, 170], ['SALES', 0, 170], ['PURCHASING', 0, 166], ['INVENTORY', 4, 162],
+      ['WAREHOUSE', 4, 162], ['PROJECTS', 4, 156], ['SERVICE', 10, 150], ['E-DOCUMENTS', 10, 150],
+      ['APPSOURCE', 10, 144], ['POWER BI', 16, 138], ['COPILOT', 16, 138], ['AI AGENTS', 20, 134],
+      ['AGENTIC ERP', 20, 128]
     ];
     const n = layers.length;
     const blocks = layers.map((L, i) => Object.assign({ label: L[0] }, box(L[1], L[2], i * H, H), tint(i / (n - 1))));
