@@ -24,6 +24,7 @@ window.THEME = (() => {
     // Company logo, top-left, ALWAYS shown. null = DON'T TOUCH the game's existing logo element (the default).
     // Only set a path here if the project has no logo yet; it must be a file that really exists.
     brandLogoSrc: null,
+    board: { title: 'Top stackers', scope: 'default', label: '', cta: 'Enter the prize raffle' },
     wall: 'STILL NOT ON-PREM × SCALE IT × ',
   };
 
@@ -41,6 +42,7 @@ window.THEME = (() => {
       { min: 10, title: 'Strong stack!', sub: 'That ERP is looking production-ready.' },
       { min: 16, title: 'Go-live approved!', sub: 'Flawless. The NAV box is retired.' },
     ],
+    board: { title: 'Top stackers', scope: 'directions-emea-2026', label: 'Directions EMEA 2026', cta: 'Enter the prize raffle' },
     wall: 'STILL ON NAV × UPGRADE IT × ',
     kicker: 'PARIS · 27–29 OCT 2026',
     logoSrc: 'assets/emealogo.WebP',
