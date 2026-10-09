@@ -47,7 +47,7 @@
   };
 
   const MONO = "'Martian Mono', ui-monospace, monospace";
-  const DISPLAY = "'Archivo', ui-sans-serif, system-ui, sans-serif";
+  const DISPLAY = "'Mulish', ui-sans-serif, system-ui, sans-serif";   // company brand font
   const COS = 0.8660254;
   const SIN = 0.5;
 
@@ -459,7 +459,8 @@
 
   /**
    * Score pop-up. kind: 'perfect' | 'slice'. p = 0..1 over ~900 ms.
-   * (x, y) = screen point above the landed block.
+   * (x, y) = screen point above the landed block (number baseline).
+   * Small Martian Mono label over a big glowing Mulish number.
    */
   function drawPopup(ctx, x, y, kind, p, k = 1) {
     const inT = clamp(p / 0.18, 0, 1);
@@ -473,14 +474,94 @@
     if ('letterSpacing' in ctx) ctx.letterSpacing = `${(perfect ? 4.4 : 3.4) * k}px`;
     ctx.font = `600 ${(perfect ? 11 : 10) * k}px ${MONO}`;
     ctx.fillStyle = perfect ? COLORS.cyan : COLORS.amber;
-    ctx.fillText(perfect ? 'PERFECT' : 'SLICED', x, y + rise - (perfect ? 50 : 38) * k);
-    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
-    if ('fontStretch' in ctx) ctx.fontStretch = 'expanded';
-    ctx.font = `800 ${(perfect ? 46 : 34) * k}px ${DISPLAY}`;
+    ctx.fillText(perfect ? 'PERFECT' : 'SLICED', x, y + rise - (perfect ? 50 : 40) * k);
+    if ('letterSpacing' in ctx) ctx.letterSpacing = `${-1.2 * k}px`;
+    ctx.font = `900 ${(perfect ? 48 : 36) * k}px ${DISPLAY}`;
     ctx.shadowColor = perfect ? 'rgba(91,227,255,0.85)' : 'rgba(255,178,63,0.55)';
     ctx.shadowBlur = (perfect ? 22 : 16) * k;
     ctx.fillStyle = perfect ? '#FFFFFF' : '#FFE2B0';
     ctx.fillText(perfect ? '+500' : '+100', x, y + rise);
+    ctx.restore();
+  }
+
+  // ── Art layer (Paweł's hand) ────────────────────────────────────────────────
+  // Everything here is the "tagged infrastructure" layer: hand-drawn marks on top
+  // of the clean corporate render. Palette is deliberately separate from the blues.
+  const ART = {
+    chalk: '#F2EEE6',
+    ink: '#0A0D14',
+    pink: '#FF3EA5',
+  };
+
+  /**
+   * Tint a black-on-transparent drawing (e.g. a scanned × mark) to any colour.
+   * Cache the result; don't call per frame.
+   */
+  function tintSprite(img, color) {
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    const x = c.getContext('2d');
+    x.drawImage(img, 0, 0);
+    x.globalCompositeOperation = 'source-in';
+    x.fillStyle = color;
+    x.fillRect(0, 0, c.width, c.height);
+    return c;
+  }
+
+  /**
+   * One hand-drawn-looking × mark. If `sprite` (a canvas from tintSprite or an
+   * <img>) is given it is drawn instead of the procedural stand-in.
+   */
+  function drawXMark(ctx, x, y, size, rot, color, k = 1, sprite = null) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    if (sprite) {
+      const s = size * 2.4 * k;
+      ctx.drawImage(sprite, -s / 2, -s / 2, s, s);
+    } else {
+      const s = size * k;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = Math.max(1.6, size * 0.42) * k;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-s, -0.9 * s); ctx.quadraticCurveTo(0.12 * s, -0.12 * s, s, s);
+      ctx.moveTo(0.95 * s, -s); ctx.quadraticCurveTo(-0.1 * s, 0.12 * s, -0.9 * s, 0.95 * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /**
+   * Perfect-drop × burst: 9 marks on an isometric ellipse around the landed block,
+   * alternating pink / chalk. p = 0..1 over ~600 ms. sprites = { pink, chalk } (optional, arrays OK).
+   */
+  function drawPerfectXs(ctx, v, b, p, sprites = null) {
+    const c = v.p(b.x0 + b.w / 2, GEOM.depth / 2, b.y0 + b.h);
+    const k = v.k;
+    const appear = easeOut(clamp(p / 0.25, 0, 1));
+    const alpha = p < 0.6 ? 1 : clamp(1 - (p - 0.6) / 0.4, 0, 1);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2 + 0.4;
+      const r = (110 + (i % 3) * 14 + 14 * p) * k;
+      const pink = i % 2 === 0;
+      const pick = (s) => (Array.isArray(s) ? s[i % s.length] : s);
+      const sprite = sprites ? pick(pink ? sprites.pink : sprites.chalk) : null;
+      drawXMark(ctx, c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r * 0.55,
+        (5 + (i % 3) * 1.6) * appear, (i * 0.7) % 1.2 - 0.6, pink ? ART.pink : ART.chalk, k, sprite);
+    }
+    ctx.restore();
+  }
+
+  /** × marks at the ends of the slice line. p = 0..1 over ~400 ms. */
+  function drawCutXs(ctx, v, x, y0, h, p, sprite = null) {
+    const d = GEOM.depth, yt = y0 + h;
+    const pts = [[v.p(x, -18, yt), 0.2, 4.5], [v.p(x, d + 18, yt), -0.3, 4.5], [v.p(x, d, y0 - 8), 0.1, 4]];
+    ctx.save();
+    ctx.globalAlpha = clamp(1 - p, 0, 1);
+    for (const [pt, rot, size] of pts) drawXMark(ctx, pt[0], pt[1] + (size === 4 ? 6 * v.k : 0), size, rot, ART.chalk, v.k, sprite);
     ctx.restore();
   }
 
@@ -666,6 +747,7 @@
 
   global.StackRenderer = {
     COLORS, GEOM, MONO, DISPLAY, LABEL_FIT, SHORT_LABELS, fitLabel,
+    ART, tintSprite, drawXMark, drawPerfectXs, drawCutXs,
     scaleFor, makeView, centredOriginX, tint,
     drawBlock, drawDropGuide, drawTrail,
     drawPerfectRings, drawCutLine, drawShard, shakeOffset, drawPopup,

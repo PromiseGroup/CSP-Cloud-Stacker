@@ -8,7 +8,7 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Martian+Mono:wdth,wght@75..112.5,100..800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&amp;family=Permanent+Marker&amp;family=Martian+Mono:wdth,wght@75..112.5,100..800&amp;display=swap">
 <style>
 body{margin:0}
 .layer{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
@@ -25,9 +25,14 @@ body{margin:0}
 @keyframes pop{0%{transform:translateY(16px) scale(.9);opacity:0}18%{transform:translateY(0) scale(1.04);opacity:1}70%{opacity:1}100%{transform:translateY(-22px);opacity:0}}
 .drift{animation:drift 14s ease-in-out infinite alternate}
 @keyframes drift{from{transform:translateX(-18px)}to{transform:translateX(18px)}}
+.art{outline:1.5px dashed #FF3EA5;outline-offset:4px;border-radius:10px}
+.art-tag{font-family:'Martian Mono',ui-monospace,monospace;font-size:8px;font-weight:600;letter-spacing:.16em;color:#FF3EA5;white-space:nowrap}
+.bob{animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.wall{font-family:'Permanent Marker','Mulish',sans-serif;text-transform:uppercase;white-space:nowrap;color:#F2EEE6}
 </style>
 </helmet>
-<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #02060F; font-family: 'Archivo', ui-sans-serif, system-ui, sans-serif; color: #F4F8FF">
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #02060F; font-family: 'Mulish', ui-sans-serif, system-ui, sans-serif; color: #F4F8FF">
 
 <div style="position: absolute; inset: 0; background: radial-gradient(130% 75% at 50% 40%, #0D3B7C 0%, #08204B 36%, #040C22 68%, #02060F 100%)"></div>
 <div style="position: absolute; left: -70px; top: 170px; width: 530px; height: 400px; background: radial-gradient(closest-side, rgba(0,120,212,.6), rgba(0,120,212,0))"></div>
@@ -73,15 +78,23 @@ body{margin:0}
 <svg class="layer" width="390" height="844" aria-hidden="true">
 <polygon class="ring" points="{{ring1}}" fill="none" stroke="#FFFFFF" stroke-width="1.6"></polygon>
 <polygon class="ring2" points="{{ring2}}" fill="none" stroke="#5BE3FF" stroke-width="1.2"></polygon>
-<path d="{{burst}}" stroke="#DFF8FF" stroke-width="1.4" stroke-linecap="round" opacity="0.85"></path>
+<path d="{{xPink}}" stroke="#FF3EA5" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+<path d="{{xChalk}}" stroke="#F2EEE6" stroke-width="2" stroke-linecap="round" fill="none"></path>
 </svg>
 </div>
 
 <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 220px; background: linear-gradient(to bottom, rgba(2,6,15,0), rgba(2,6,15,.75) 55%, #02060F)"></div>
 
+<div style="position: absolute; left: 18px; bottom: 66px; display: flex; flex-direction: column; align-items: center; gap: 8px">
+<span class="art-tag">× YOUR ART · MASCOT · IMPRESSED</span>
+<div class="art bob" style="width: 60px; height: 72px">
+<svg width="60" height="72" viewBox="0 0 80 96" role="img" aria-label="Mascot placeholder (on-prem server), impressed pose"><path d="M57 16 C60 6 71 5 72 13" stroke="#F2EEE6" stroke-width="2" fill="none" stroke-linecap="round"></path><rect x="69" y="12" width="6" height="5" rx="1" fill="#F2EEE6"></rect><path d="M27 80 V89 M53 80 V89" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"></path><path d="M22 90 H31 M49 90 H58" stroke="#F2EEE6" stroke-width="3.2" stroke-linecap="round"></path><rect x="12" y="16" width="56" height="65" rx="8" fill="#0A0D14" stroke="#F2EEE6" stroke-width="2"></rect><rect x="19" y="23" width="42" height="25" rx="4" fill="#F2EEE6"></rect><path d="M20 57 H50 M20 65 H50 M20 73 H50" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity="0.7"></path><circle cx="57" cy="57" r="2" fill="#7CF5FF"></circle><circle cx="57" cy="65" r="2" fill="#FFB23F"></circle><circle cx="31" cy="34" r="4.2" fill="none" stroke="#0A0D14" stroke-width="2"></circle><circle cx="49" cy="34" r="4.2" fill="none" stroke="#0A0D14" stroke-width="2"></circle><circle cx="31" cy="34" r="1.6" fill="#0A0D14"></circle><circle cx="49" cy="34" r="1.6" fill="#0A0D14"></circle><circle cx="40" cy="43" r="2.2" fill="none" stroke="#0A0D14" stroke-width="1.8"></circle><path d="M4 20 L10 26 M10 20 L4 26" stroke="#FF3EA5" stroke-width="2.4" stroke-linecap="round"></path></svg>
+</div>
+</div>
+
 <div class="pop" style="position: absolute; left: 0; right: 0; top: 252px; display: flex; flex-direction: column; align-items: center; gap: 2px">
 <span style="font-family: 'Martian Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .4em; color: #5BE3FF; padding-left: .4em">PERFECT</span>
-<span style="font-size: 46px; line-height: 1; font-weight: 800; font-stretch: 118%; letter-spacing: -0.02em; color: #FFFFFF; text-shadow: 0 0 22px rgba(91,227,255,.85), 0 0 2px rgba(255,255,255,.9)">+500</span>
+<span style="font-size: 48px; line-height: 1; font-weight: 900; letter-spacing: -0.03em; color: #FFFFFF; text-shadow: 0 0 22px rgba(91,227,255,.85), 0 0 2px rgba(255,255,255,.9)">+500</span>
 </div>
 
 <div style="position: absolute; left: 22px; top: 26px; opacity: .85">
@@ -145,14 +158,21 @@ class Component extends DCLogic {
     const land = box(lx, lw, ly, H);
     const ring = (e) => pl([P(lx - e, -e, yt), P(lx + lw + e, -e, yt), P(lx + lw + e, D + e, yt), P(lx - e, D + e, yt)]);
     const c = P(lx + lw / 2, D / 2, yt);
-    let burst = '';
-    for (let i = 0; i < 12; i++) {
-      const a = (i / 12) * Math.PI * 2 + 0.26;
-      const r1 = 118 + (i % 2) * 14, r2 = r1 + 12 + (i % 3) * 6;
-      const cx = Math.cos(a), cy = Math.sin(a) * 0.55;
-      burst += 'M' + f(c[0] + cx * r1) + ',' + f(c[1] + cy * r1) + 'L' + f(c[0] + cx * r2) + ',' + f(c[1] + cy * r2);
+    const xm = (cx, cy, s, r) => {
+      const T = (x, y) => [cx + (x * Math.cos(r) - y * Math.sin(r)) * s, cy + (x * Math.sin(r) + y * Math.cos(r)) * s];
+      const a = T(-1, -0.9), q = T(0.12, -0.12), b = T(1, 1), c2 = T(0.95, -1), q2 = T(-0.1, 0.12), d2 = T(-0.9, 0.95);
+      return 'M' + f(a[0]) + ',' + f(a[1]) + 'Q' + f(q[0]) + ',' + f(q[1]) + ' ' + f(b[0]) + ',' + f(b[1]) +
+        'M' + f(c2[0]) + ',' + f(c2[1]) + 'Q' + f(q2[0]) + ',' + f(q2[1]) + ' ' + f(d2[0]) + ',' + f(d2[1]);
+    };
+    let xPink = '', xChalk = '';
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2 + 0.4;
+      const r = 122 + (i % 3) * 14;
+      const x = c[0] + Math.cos(a) * r, y = c[1] + Math.sin(a) * r * 0.55;
+      const mark = xm(x, y, 5 + (i % 3) * 1.6, (i * 0.7) % 1.2 - 0.6);
+      if (i % 2) xChalk += mark; else xPink += mark;
     }
-    return { blocks, land, ring1: ring(14), ring2: ring(34), burst };
+    return { blocks, land, ring1: ring(14), ring2: ring(34), xPink, xChalk };
   }
 }
 </script>

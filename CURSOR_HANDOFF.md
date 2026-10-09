@@ -27,7 +27,8 @@ You are re-skinning an existing web game. **This is a visual-only change.** The 
 4. Wire effects to the existing drop outcomes: perfect, slice, miss.
 5. Add the camera easing.
 6. Restyle Screen A (title), the HUD, Screen C (game-over modal), and Screen D (raffle) with the Tailwind markup below.
-7. Compare against `screenshots/` at 390×844 and 1440×900. Run the acceptance checklist.
+7. Build the **art layer** (section below) with its stand-ins and asset slots.
+8. Compare against `screenshots/` at 390×844 and 1440×900. Run the acceptance checklist.
 
 ## Design tokens
 
@@ -57,12 +58,12 @@ Add to `<head>`:
 
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
 ```
 
-- **Archivo** (display + body). Headlines: weight 800, `font-stretch: 115%`, letter-spacing −0.025em, line-height .95.
+- **Mulish** (company brand font: display + body + buttons). Headlines: weight 900, letter-spacing −0.035em, line-height .95. Buttons: weight 800, letter-spacing .16em, uppercase. Body: 400–600.
 - **Martian Mono** (score, labels, eyebrows). Eyebrows: 10–11px, weight 500–600, letter-spacing .24–.34em, uppercase.
-- Canvas text needs the fonts loaded first: `await document.fonts.load("500 8px 'Martian Mono'")` and `document.fonts.load("800 46px 'Archivo'")` before the first frame.
+- Canvas text needs the fonts loaded first: `await document.fonts.load("500 8px 'Martian Mono'")` and `document.fonts.load("900 46px 'Mulish'")` before the first frame.
 
 ## The isometric model
 
@@ -146,14 +147,14 @@ view.ox += (targetOx - view.ox) * Math.min(1, dt * 5);
 
 | Event | What to trigger | Timing |
 |---|---|---|
-| **Perfect drop** | Landed block `flash`: 1 for 120 ms, then linear to 0 over 250 ms. `drawPerfectRings(block, p)`. `shakeOffset(p)` (6px × k, decaying). `drawPopup(…, 'perfect', p)` above the block. HUD score turns cyan for 120 ms. | rings 600 ms · shake 300 ms · popup 900 ms |
-| **Slice** | Kept block `cut`: 0.9 → 0 over 450 ms (amber right face; only when the overhang was on the +x side). `drawCutLine(x = cut position)`. Push a shard `{x0, w, y0, h, side}` and draw it with `drawShard(shard, secondsSinceCut)` until it returns `false`. `drawPopup(…, 'slice', p)`, offset 70px × k to the right. | cut line 250 ms · shard ~1.1 s · popup 900 ms |
-| **Miss (game over)** | The whole active block becomes a shard (`side` = which way it missed). Stop input. After ~750 ms show Screen C. | — |
+| **Perfect drop** | Landed block `flash`: 1 for 120 ms, then linear to 0 over 250 ms. `drawPerfectRings(block, p)` + `drawPerfectXs(view, block, p)`. Mascot → *impressed* 900 ms. `shakeOffset(p)` (6px × k, decaying). `drawPopup(…, 'perfect', p)` above the block. HUD score turns cyan for 120 ms. | rings 600 ms · shake 300 ms · popup 900 ms |
+| **Slice** | Kept block `cut`: 0.9 → 0 over 450 ms (amber right face; only when the overhang was on the +x side). `drawCutLine(x = cut position)` + `drawCutXs(…)` (400 ms). Push a shard `{x0, w, y0, h, side}` and draw it with `drawShard(shard, secondsSinceCut)` until it returns `false`. `drawPopup(…, 'slice', p)`, offset 70px × k to the right. Mascot → *ouch* 900 ms (2 quick 3px wiggles). | cut line 250 ms · shard ~1.1 s · popup 900 ms |
+| **Miss (game over)** | The whole active block becomes a shard (`side` = which way it missed). Stop input. Mascot → *miss* (stays until the card shows). After ~750 ms show Screen C; the corner mascot hides and the *crashed* peek appears on the card. | — |
 | **Next block** | Spawn ~300 ms after a landing so the effects read. It isn't drawn and can't be dropped during that gap. | 300 ms |
 
 ## DOM screens (Tailwind)
 
-Arbitrary values are used so no Tailwind config is needed. Font families: `font-['Archivo']`, `font-['Martian_Mono']`. Keep your existing IDs and handlers. Exact source: `reference/Main.dc.html`, `GameOver.dc.html`, `Raffle.dc.html`.
+Arbitrary values are used so no Tailwind config is needed. Font families: `font-['Mulish']`, `font-['Martian_Mono']`. Keep your existing IDs and handlers. Exact source: `reference/Main.dc.html`, `GameOver.dc.html`, `Raffle.dc.html`.
 
 ### HUD (Screen B)
 
@@ -189,10 +190,10 @@ The canvas keeps rendering behind it in **attract mode**: the base plus ~8 pre-s
   <div class="relative w-full max-w-[420px] mx-auto px-6 pb-8 flex flex-col gap-[26px] pointer-events-auto
               min-[900px]:mx-0 min-[900px]:ml-[8vw] min-[900px]:p-0 min-[900px]:max-w-[460px] min-[900px]:gap-8">
     <div>
-      <h1 class="font-['Archivo'] text-[44px] min-[900px]:text-[68px] leading-[.95] font-extrabold [font-stretch:115%] tracking-[-0.025em] text-[#F4F8FF]">Build your<br>cloud <span class="text-[#5BE3FF]">stack.</span></h1>
+      <h1 class="font-['Mulish'] text-[44px] min-[900px]:text-[68px] leading-[.95] font-black tracking-[-0.035em] text-[#F4F8FF]">Build your<br>cloud <span class="text-[#5BE3FF]">stack.</span></h1>
       <p class="mt-3.5 text-[15px] min-[900px]:text-[17px] leading-[1.45] text-[#A9BDDB] max-w-[310px] min-[900px]:max-w-[380px]">Drop each service onto the one below. Land it clean for +500. Any overhang gets sliced off.</p>
     </div>
-    <button id="start-btn" type="button" class="cs-pulse h-[60px] w-full min-[900px]:max-w-[340px] rounded-[14px] bg-[#0070C9] hover:bg-[#0A7BDA] text-white font-['Archivo'] text-[15px] font-bold [font-stretch:115%] tracking-[.18em] uppercase flex items-center justify-center gap-3">
+    <button id="start-btn" type="button" class="cs-pulse h-[60px] w-full min-[900px]:max-w-[340px] rounded-[14px] bg-[#0070C9] hover:bg-[#0A7BDA] text-white font-['Mulish'] text-[15px] font-extrabold tracking-[.16em] uppercase flex items-center justify-center gap-3">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8.5" opacity=".5"/></svg>
       Tap to start
     </button>
@@ -220,7 +221,7 @@ The canvas stays frozen behind it. Blur it with the backdrop:
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFB23F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5h8"/><path d="M3 9.5h6"/><path d="M10.5 3.5l3.5 4.5-2.5 1.5"/></svg>
         GAME OVER
       </div>
-      <h2 class="mt-2.5 font-['Archivo'] text-[36px] leading-none font-extrabold [font-stretch:115%] tracking-[-0.02em] text-[#F4F8FF]">Stack crashed!</h2>
+      <h2 class="mt-2.5 font-['Mulish'] text-[36px] leading-none font-black tracking-[-0.02em] text-[#F4F8FF]">Stack crashed!</h2>
     </div>
     <div class="flex items-end justify-between gap-3 rounded-[14px] bg-[#0A1D42] px-[18px] pt-[18px] pb-4">
       <div>
@@ -238,7 +239,7 @@ The canvas stays frozen behind it. Blur it with the backdrop:
       <input id="initials" maxlength="3" autocapitalize="characters" autocomplete="off" spellcheck="false"
              class="w-full h-[76px] rounded-xl bg-[#0B2350] border-[1.5px] border-[#3AA0FF] shadow-[0_0_0_4px_rgba(0,120,212,.28)] text-white text-center uppercase font-['Martian_Mono'] text-[38px] font-semibold tracking-[.5em] pl-[.5em] outline-none">
     </div>
-    <button id="save-score" type="button" class="h-[58px] rounded-[14px] bg-[#0070C9] hover:bg-[#0A7BDA] text-white font-['Archivo'] text-[15px] font-bold [font-stretch:115%] tracking-[.18em] uppercase shadow-[0_12px_30px_rgba(0,112,201,.4)]">Save score</button>
+    <button id="save-score" type="button" class="h-[58px] rounded-[14px] bg-[#0070C9] hover:bg-[#0A7BDA] text-white font-['Mulish'] text-[15px] font-extrabold tracking-[.16em] uppercase shadow-[0_12px_30px_rgba(0,112,201,.4)]">Save score</button>
   </div>
 </section>
 ```
@@ -258,7 +259,7 @@ Static background: the same sky gradient as the canvas backdrop, with the bloom 
       <span class="text-xs text-[#A9BDDB]">saved</span>
     </div>
     <div>
-      <h1 class="font-['Archivo'] text-[36px] leading-[.98] font-extrabold [font-stretch:115%] tracking-[-0.025em] text-[#F4F8FF]">Enter the prize raffle!</h1>
+      <h1 class="font-['Mulish'] text-[36px] leading-[.98] font-black tracking-[-0.035em] text-[#F4F8FF]">Enter the prize raffle!</h1>
       <p class="mt-2.5 text-[15px] leading-[1.45] text-[#A9BDDB]">Leave your details for a chance to win <span class="text-[#F4F8FF] font-semibold">[PRIZE]</span>.</p>
     </div>
     <div class="rounded-[18px] border border-dashed border-[rgba(120,170,255,.38)] bg-[rgba(6,20,48,.55)] p-4">
@@ -269,16 +270,39 @@ Static background: the same sky gradient as the canvas backdrop, with the bloom 
 </section>
 ```
 
+## Art layer ("tagged infrastructure")
+
+A hand-drawn layer by the game's artist sits **on top of** the clean render, like graffiti on a server rack. It never replaces the corporate look; it shows up only at the moments below. It has its own palette, kept separate from the blues:
+
+```
+chalk  #F2EEE6   ink  #0A0D14   pink  #FF3EA5
+```
+
+**Build every slot now with the stand-in, and load the real art from `/assets/art/` when the file exists.** The game must look finished with stand-ins only. When a PNG is added, it replaces its stand-in with no code change: try to load it, and fall back if it 404s. `preview.html` shows every stand-in working.
+
+| # | Element | Where / when | Asset file(s) (transparent PNG @2x) | Stand-in until then |
+|---|---|---|---|---|
+| 1 | **× marks** | Perfect: 9 marks burst on an iso ellipse around the landed block, alternating pink/chalk, scale in, then fade (600 ms). Slice: 3 chalk marks at the ends of the cut line (400 ms). | `x-1.png` … `x-4.png`, drawn **black on transparent**, ~128px. Tint once at load with `StackRenderer.tintSprite(img, ART.pink)` / `ART.chalk` and cache. | `drawPerfectXs()` / `drawCutXs()` draw procedural ×'s. Pass the tinted sprites as the optional last argument once they exist. |
+| 2 | **Mascot: the on-prem server** | A stubby little server box with a screen for a face (the legacy machine being migrated, deadpan about it). DOM `<img>` over the canvas, 3.2 s idle bob (±3px). **Title:** leaning against the on-prem base's right face. Position each frame from `view.p(GEOM.baseW, 40, 0)`: left = x + 6, top = y − height. Width 80px (104px at ≥900px wide). **Play:** bottom-left, `left:18px; bottom:66px; width:60px` (desktop `left:44px; bottom:84px; width:84px`). Swap to *impressed* for 900 ms on every perfect, *ouch* for 900 ms on every slice (+100), then back to *idle*. **Miss:** switch to *miss* and keep it in the corner until the game-over card appears (~750 ms), then hide the corner mascot. **Game over:** *crashed* pose peeks over the modal card's top-right edge (`position:absolute; right:26px; top:-74px; width:84px`), hands gripping the edge. | `mascot-idle.png`, `mascot-impressed.png`, `mascot-ouch.png`, `mascot-miss.png` (all ≈400×480, feet on the bottom edge; *ouch* = squinting `> <` eyes, gritted teeth, sweat drop, pink pain ticks; *miss* = wide eyes looking down, open mouth, pink `!!`), `mascot-crashed.png` (top of the server + hands only, × eyes on its screen, smoke from its cable, ≈420×410, hands on the bottom edge). | The placeholder SVGs in `preview.html` (`.pose-idle`, `.pose-impressed`, `.pose-ouch`, `.pose-miss`, `.peek`). |
+| 3 | **Text wall** | Background of Screen C (between the blurred scene and the card) and Screen D (behind the content). Opacity 7.5% (C) / 6% (D), rotated −4°, full screen. Phrase: `STILL NOT ON-PREM × SCALE IT ×`. **Never** behind gameplay. | `wall.png`: a **seamless tileable** chalk-lettering texture, white on transparent, 1024×1024, used as a repeating `background-image`. | Repeated lines in Permanent Marker (Google Font, stand-in only). See `.wall` in `preview.html`. |
+
+Rules for the art layer:
+
+- Only these three elements. No extra decoration, no art behind active gameplay.
+- Art elements are `aria-hidden`, have `pointer-events: none`, and never block a tap.
+- Respect `prefers-reduced-motion`: no bob, × marks appear without scaling.
+
 ## Acceptance checklist
 
 - [ ] At 390×844 the play screen matches `screenshots/phone-2-play.png`: stack centred, top block ~46% down, score top-right, fog at the bottom.
 - [ ] Blocks are isometric: lit top, dark sides, neon edge on the two front top edges, white mono label on the long face, LED dots.
 - [ ] Colour climbs with height: lower blocks are deeper azure, the top blocks brightest cyan.
 - [ ] Perfect: white flash, two rings, short shake, "PERFECT / +500" pop-up, score turns cyan briefly.
-- [ ] Slice: amber cut line, amber cut face, shard tumbles away and fades, "SLICED / +100" pop-up in amber.
-- [ ] Miss: block falls away; modal appears ~750 ms later over a blurred, dimmed scene.
+- [ ] Slice: amber cut line, amber cut face, shard tumbles away and fades, "SLICED / +100" pop-up in amber, mascot winces (*ouch*).
+- [ ] Miss: block falls away, mascot shows *miss* in the corner; modal appears ~750 ms later over a blurred, dimmed scene.
 - [ ] Title: tower visible above the copy on phone; on ≥900px wide the copy is left and the tower right.
-- [ ] Martian Mono + Archivo actually load (check the Network tab); canvas labels use Martian Mono.
+- [ ] Mulish + Martian Mono actually load (check the Network tab); all display/body/button text is Mulish; canvas labels and score use Martian Mono.
+- [ ] Art layer: all three slots render with stand-ins; dropping a PNG into `/assets/art/` swaps it in with no code change.
 - [ ] Canvas is crisp on retina (backing store × devicePixelRatio, capped at 2) and resizes correctly.
 - [ ] Holds 60 fps on a mid-range phone (backdrop/floor/grain are cached; only the scene redraws).
 - [ ] Gameplay, scoring, saving and the D365 flow behave exactly as before.
